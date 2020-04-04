@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Badge  } from 'antd';
-import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
 import queryString from "query-string";
@@ -22,19 +22,6 @@ const Menus = (props) => {
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
   var {route} = router;
   var {id} = router.query;
-  if(id){
-    switch (route) {
-      case "/resident":
-        route = "/resident-edit";
-        break;
-      case "/barangay-official":
-        route = "/barangay-official-edit";
-        break;
-    
-      default:
-        break;
-    }
-  }
 
   const onCollapse = () => {
     setCollapsed(!collapsed);
@@ -44,14 +31,22 @@ const Menus = (props) => {
     <React.Fragment>
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
           <div className="logo" />
-          <Menu defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1">
-              <UserOutlined />
-              <span>Option 1</span>
+          <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline">
+            <Menu.Item key="/">
+              <DashboardOutlined />
+              <span>Dashboard</span>
             </Menu.Item>
-            <Menu.Item key="2">
+            <Menu.Item key="/students">
               <UserOutlined />
-              <span>Option 2</span>
+              <Link href="/students">
+                <a>Students</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/sections">
+              <UserOutlined />
+              <Link href="/sections">
+                <a>Sections</a>
+              </Link>
             </Menu.Item>
             <SubMenu
               key="sub1"

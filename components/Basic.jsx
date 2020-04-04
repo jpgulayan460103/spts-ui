@@ -7,10 +7,10 @@ function mapStateToProps(state) {
   };
 }
 const handleClick = () => {}
-const Resident = (props) => {
+const StudentTable = (props) => {
   return (
     <div>
-      
+      StudentTable
     </div>
   );
 }
@@ -19,4 +19,4 @@ const Resident = (props) => {
 
 export default connect(
   mapStateToProps,
-)(Resident);
+)(StudentTable);

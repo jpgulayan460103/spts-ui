@@ -7,7 +7,6 @@ import { Table, Typography, Divider, Pagination, Modal, Select, Input, Button } 
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import _isEmpty from 'lodash/isEmpty'
 import _forEach from 'lodash/forEach'
-import isEmpty from 'lodash/isEmpty';
 
 const { Option } = Select;
 const { Search } = Input;

@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
 import user from './userReducer'
-import resident from './residentReducer'
-import barangayOfficial from './barangayOfficialReducer'
+import student from './studentReducer'
+import classSection from './classSectionReducer'
 import smsBlast from './smsBlastReducer'
 
 const rootReducer = combineReducers({
   user,
-  resident,
-  barangayOfficial,
+  student,
+  classSection,
   smsBlast,
 })
 

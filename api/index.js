@@ -1,12 +1,14 @@
 import User from './User'
-import Resident from './Resident'
+import Student from './Student'
+import ClassSection from './ClassSection'
 import BarangayOfficial from './BarangayOfficial'
 import SmsBlast from './SmsBlast'
 
 
 export default {
   User,
-  Resident,
+  Student,
+  ClassSection,
   BarangayOfficial,
   SmsBlast,
 }
