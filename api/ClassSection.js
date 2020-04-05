@@ -11,6 +11,9 @@ export default {
   delete(id){
     return axios.delete(`${axios.custom_base_url}api/class-sections/${id}`);
   },
+  students(id){
+    return axios.get(`${axios.custom_base_url}api/class-sections/${id}/students`);
+  },
   all(formData){
     return axios.get(`${axios.custom_base_url}api/class-sections`,{
       params: formData

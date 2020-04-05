@@ -47,7 +47,11 @@ const ClassSectionTable = (props) => {
     });
     return items;
   }
-  const selectClassSection = (classSection) => {
+  const selectClassSection = (classSection, type="class-section") => {
+    props.dispatch({
+      type: "SET_CLASS_SECTION_FORM_TYPE",
+      data: type
+    });
     props.dispatch({
       type: "SELECT_CLASS_SECTION",
       data: classSection
@@ -128,9 +132,11 @@ const ClassSectionTable = (props) => {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a onClick={() => {selectClassSection(record)} }>Edit</a>
+          <a href="#!" onClick={() => {selectClassSection(record, "student")} }>Add Students</a>
           &nbsp;|&nbsp;
-          <a onClick={() => {deleteClassSection(record)} }>Delete</a>
+          <a href="#!" onClick={() => {selectClassSection(record, "class-section")} }>Edit</a>
+          &nbsp;|&nbsp;
+          <a href="#!" onClick={() => {deleteClassSection(record)} }>Delete</a>
         </span>
       ),
     }

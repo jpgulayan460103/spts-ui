@@ -81,6 +81,11 @@ const StudentTable = (props) => {
       key: 'full_name_last',
     },
     {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (text, record) => (

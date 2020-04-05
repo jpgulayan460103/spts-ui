@@ -4,6 +4,7 @@ const initialState = () => {
   return {
     formData: {},
     formError: {},
+    formType: "class-section",
     user: {},
     barangays: {},
     classSections: [],
@@ -11,6 +12,7 @@ const initialState = () => {
     updatedClassSection: {},
     tablePagination: {},
     searchData: {},
+    students: [],
   }
 }
 
@@ -36,6 +38,12 @@ export default function residentReducer(state = initialState(), action) {
       return state
     case 'SET_CLASS_SECTIONS_SEARCH_DATA':
       state.searchData = action.data;
+      return state
+    case 'SET_CLASS_SECTION_FORM_TYPE':
+      state.formType = action.data;
+      return state
+    case 'SELECT_CLASS_SECTION_STUDENTS':
+      state.students = action.data;
       return state
 
     default:
