@@ -56,11 +56,13 @@ class LoginForm extends Component {
       Router.push('/')
     })
     .catch(err => {
-      this.props.dispatch({
-        type: "USER_LOGIN_FAILED",
-        data: err
-      });
-      Router.push('/login')
+      if(res.response && res.response.data){
+        this.props.dispatch({
+          type: "USER_LOGIN_FAILED",
+          data: err
+        });
+        Router.push('/login')
+      }
     })
     .then(res => {})
   }

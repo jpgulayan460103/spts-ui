@@ -10,20 +10,19 @@ const { Option } = Select;
 
 function mapStateToProps(state) {
   return {
-    students: state.classSection.students,
-    pagination: state.classSection.tablePagination,
-    searchData: state.classSection.searchData,
-    classSections: state.classSection.classSections,
-    updatedClassSection: state.classSection.updatedClassSection,
-    selectedClassSection: state.classSection.selectedClassSection,
+    subjects: state.subject.subjects,
+    pagination: state.subject.tablePagination,
+    searchData: state.subject.searchData,
+    updatedSubject: state.subject.updatedSubject,
     tracks: state.appDefault.tracks,
+    semesters: state.appDefault.semesters,
   };
 }
 const handleClick = () => {}
-const ClassSectionTable = (props) => {
+const SubjectTable = (props) => {
   useEffect(() => {
-    getClassSections();
-  }, [props.updatedClassSection]);
+    getSubjects();
+  }, [props.updatedSubject]);
 
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({});
@@ -34,11 +33,11 @@ const ClassSectionTable = (props) => {
   const setTrackFilter = (value) => {
     setSearchData({...searchData,track_id:value});
   }
+  const setSemesterFilter = (value) => {
+    setSearchData({...searchData,semester_id:value});
+  }
   const setGradeLevelFilter = (value) => {
     setSearchData({...searchData,grade_level:value});
-  }
-  const setSchoolYearFilter = (value) => {
-    setSearchData({...searchData,school_year:value});
   }
   const populateTrackSelection = (section) => {
     let items = [];
@@ -47,40 +46,45 @@ const ClassSectionTable = (props) => {
     });
     return items;
   }
-  const selectClassSection = (classSection) => {
+  const populateSemesterSelection = (section) => {
+    let items = [];
+    _forEach(section, function(value, key) {
+      items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
+    });
+    return items;
+  }
+  const selectSubject = (subject) => {
     props.dispatch({
-      type: "SELECT_CLASS_SECTION",
-      data: classSection
+      type: "SELECT_SUBJECT",
+      data: subject
     });
   }
-  const deleteClassSection = (classSection) => {
-    API.ClassSection.delete(classSection.id)
+  const deleteSubject = (subject) => {
+    API.Subject.delete(subject.id)
     .then((res) => {
-      getClassSections(1);
+      getSubjects(1);
     })
   }
   const handleResidentPage = (val) => {
-    getClassSections(val);
+    getSubjects(val);
   }
-  const getClassSections = (page = 1) => {
+  const getSubjects = (page = 1) => {
     setLoading(true);
     let filterOptions = {
       page: page,
       ...searchData
     }
-    API.ClassSection.all(filterOptions)
+    API.Subject.all(filterOptions)
     .then((res) => {
-      let result = res.data.class_sections.data;
-      let resultPagination = res.data.class_sections.meta.pagination;
-      console.log(result);
-      
+      let result = res.data.subjects.data;
+      let resultPagination = res.data.subjects.meta.pagination;
       setLoading(false);
       props.dispatch({
-        type: "SET_CLASS_SECTIONS",
+        type: "SET_SUBJECTS",
         data: result
       })
       props.dispatch({
-        type: "SET_CLASS_SECTIONS_PAGINATION",
+        type: "SET_SUBJECTS_PAGINATION",
         data: resultPagination
       })
     })
@@ -92,15 +96,10 @@ const ClassSectionTable = (props) => {
     })
   }
   
-  const dataSource = props.classSections;
+  const dataSource = props.subjects;
   const columns = [
     {
-      title: 'Section',
-      dataIndex: 'section_name',
-      key: 'section_name',
-    },
-    {
-      title: 'Strand',
+      title: 'Track',
       key: 'track',
       render: (text, record) => (
         <span>
@@ -109,28 +108,46 @@ const ClassSectionTable = (props) => {
       ),
     },
     {
+      title: 'Subject Category',
+      key: 'subject_category',
+      render: (text, record) => (
+        <span>
+          {`${record.subject_category.name}`}
+        </span>
+      ),
+    },
+    {
+      title: 'Subject Code',
+      dataIndex: 'subject_code',
+      key: 'subject_code',
+    },
+    {
+      title: 'Subject Description',
+      dataIndex: 'subject_description',
+      key: 'subject_description',
+    },
+    {
       title: 'Grade Level',
       dataIndex: 'grade_level',
-      key: 'grade_level',
+      key: 'grade level',
     },
     {
-      title: 'School Year',
-      dataIndex: 'school_year',
-      key: 'school_year',
-    },
-    {
-      title: 'Adviser',
-      dataIndex: 'section_adviser',
-      key: 'section_adviser',
+      title: 'Semester',
+      key: 'semester',
+      render: (text, record) => (
+        <span>
+          {`${record.semester.name}`}
+        </span>
+      ),
     },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <a onClick={() => {selectClassSection(record)} }>Edit</a>
-          &nbsp;|&nbsp;
-          <a onClick={() => {deleteClassSection(record)} }>Delete</a>
+          <a onClick={() => {selectSubject(record)} }>Edit</a>
+          {/* &nbsp;|&nbsp; */}
+          {/* <a onClick={() => {deleteSubject(record)} }>Delete</a> */}
         </span>
       ),
     }
@@ -152,7 +169,7 @@ const ClassSectionTable = (props) => {
         placeholder="input search text"
         onChange={value => setSearchString(value)}
         style={{ width: 200 }}
-        onSearch={() => {getClassSections()}}
+        onSearch={() => {getSubjects()}}
       />
       <Select
         allowClear
@@ -165,12 +182,12 @@ const ClassSectionTable = (props) => {
       </Select>
       <Select
         allowClear
-        placeholder="Select a School Year"
-        onChange={setSchoolYearFilter}
-        style={{ width: 200 }}
+        style={{ minWidth: 200 }}
+        placeholder="Select a Semester"
+        optionFilterProp="children"
+        onChange={setSemesterFilter}
       >
-        <Option value="2020-2021">2020-2021</Option>
-        <Option value="2021-2022">2021-2022</Option>
+        {populateSemesterSelection(props.semesters)}
       </Select>
       <Select
         allowClear
@@ -181,7 +198,7 @@ const ClassSectionTable = (props) => {
       >
         {populateTrackSelection(props.tracks)}
       </Select>
-      <Button type="primary" icon={<SearchOutlined />} onClick={() => {getClassSections()}}>
+      <Button type="primary" icon={<SearchOutlined />} onClick={() => {getSubjects()}}>
         Search
       </Button>
       <Divider />
@@ -189,7 +206,7 @@ const ClassSectionTable = (props) => {
         <Table dataSource={dataSource} columns={columns} pagination={false} loading={loading} />
       </div>
       <Divider />
-      {!_isEmpty(props.classSections) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
+      {!_isEmpty(props.subjects) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
     </div>
   );
 }
@@ -198,4 +215,4 @@ const ClassSectionTable = (props) => {
 
 export default connect(
   mapStateToProps,
-)(ClassSectionTable);
+)(SubjectTable);

@@ -1,14 +1,20 @@
 import User from './User'
 import Student from './Student'
 import ClassSection from './ClassSection'
-import BarangayOfficial from './BarangayOfficial'
-import SmsBlast from './SmsBlast'
+import Subject from './Subject'
+import Track from './Track'
+import Teacher from './Teacher'
+import Quarter from './Quarter'
+import Semester from './Semester'
 
 
 export default {
   User,
   Student,
   ClassSection,
-  BarangayOfficial,
-  SmsBlast,
+  Subject,
+  Track,
+  Teacher,
+  Quarter,
+  Semester,
 }

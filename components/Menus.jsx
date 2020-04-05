@@ -34,7 +34,9 @@ const Menus = (props) => {
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline">
             <Menu.Item key="/">
               <DashboardOutlined />
-              <span>Dashboard</span>
+              <Link href="/">
+                <a>Dashboard</a>
+              </Link>
             </Menu.Item>
             <Menu.Item key="/students">
               <UserOutlined />
@@ -46,6 +48,12 @@ const Menus = (props) => {
               <UserOutlined />
               <Link href="/sections">
                 <a>Sections</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/subjects">
+              <UserOutlined />
+              <Link href="/subjects">
+                <a>Subjects</a>
               </Link>
             </Menu.Item>
             <SubMenu
