@@ -93,8 +93,6 @@ const SubjectForm = (props) => {
     }
   }
   const formSubmit = _debounce(() => {
-    console.log(formType);
-    
     if(formType == "create"){
       addSubject();
     }else{

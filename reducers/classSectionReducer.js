@@ -13,6 +13,7 @@ const initialState = () => {
     tablePagination: {},
     searchData: {},
     students: [],
+    subjects: [],
   }
 }
 
@@ -44,6 +45,9 @@ export default function residentReducer(state = initialState(), action) {
       return state
     case 'SELECT_CLASS_SECTION_STUDENTS':
       state.students = action.data;
+      return state
+    case 'SELECT_CLASS_SECTION_SUBJECTS':
+      state.subjects = action.data;
       return state
 
     default:

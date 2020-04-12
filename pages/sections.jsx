@@ -9,7 +9,7 @@ const sectionIndex = () => {
   return (
     <Provider store={store}>
       <Head>
-        <title>Students</title>
+        <title>Sections</title>
       </Head>
       <Layouts>
         <ClassSectionParent />

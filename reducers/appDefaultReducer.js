@@ -3,6 +3,8 @@ const initialState = () => {
     tracks: [],
     quarters: [],
     semesters: [],
+    teachers: [],
+    menuCollapsed: false,
   }
 }
 
@@ -13,6 +15,12 @@ export default function appDefaultReducer(state = initialState(), action) {
       return state;
     case 'SET_QUARTERS':
       state.quarters = action.data;
+      return state;
+    case 'SET_ALL_TEACHERS':
+      state.teachers = action.data;
+      return state;
+    case 'SET_MENU_COLLAPSED':
+      state.menuCollapsed = action.data;
       return state;
     case 'SET_SEMESTERS':
       state.semesters = action.data;

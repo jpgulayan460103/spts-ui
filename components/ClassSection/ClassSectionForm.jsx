@@ -16,12 +16,15 @@ function mapStateToProps(state) {
     formError: state.classSection.formError,
     selectedClassSection: state.classSection.selectedClassSection,
     tracks: state.appDefault.tracks,
+    semesters: state.appDefault.semesters,
+    quarters: state.appDefault.quarters,
+    teachers: state.appDefault.teachers,
   };
 }
 const handleClick = () => {}
 const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 24 },
+  wrapperCol: { span: 24 },
 };
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
@@ -29,6 +32,9 @@ const tailLayout = {
 const ClassSectionForm = (props) => {
   useEffect(() => {
     _isEmpty(props.tracks) ? getTracks() : null;
+    _isEmpty(props.teachers) ? getTeachers() : null;
+    _isEmpty(props.quarters) ? getQuarters() : null;
+    _isEmpty(props.semesters) ? getSemesters() : null;
   }, []);
   useEffect(() => {
     if(!_isEmpty(props.selectedClassSection)){
@@ -55,8 +61,47 @@ const ClassSectionForm = (props) => {
       });
     });
   }
+  const getQuarters = () => {
+    API.Quarter.all().then(res => {
+      props.dispatch({
+        type: "SET_QUARTERS",
+        data: res.data.quarters.data
+      });
+    });
+  }
+  const getSemesters = () => {
+    API.Semester.all().then(res => {
+      props.dispatch({
+        type: "SET_SEMESTERS",
+        data: res.data.semesters.data
+      });
+    });
+  }
+  const getTeachers = () => {
+    API.Teacher.all({getall: 1}).then(res => {
+      props.dispatch({
+        type: "SET_ALL_TEACHERS",
+        data: res.data.teachers.data
+      });
+    });
+  }
 
   const populateTrackSelection = (section) => {
+    let items = [];
+    _forEach(section, function(value, key) {
+      items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
+    });
+    return items;
+  }
+
+  const populateQuarterSelection = (section) => {
+    let items = [];
+    _forEach(section, function(value, key) {
+      items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
+    });
+    return items;
+  }
+  const populateSemesterSelection = (section) => {
     let items = [];
     _forEach(section, function(value, key) {
       items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
@@ -73,8 +118,7 @@ const ClassSectionForm = (props) => {
     }
   }
   const formSubmit = _debounce(() => {
-    console.log(formType);
-    
+
     if(formType == "create"){
       addClassSection();
     }else{
@@ -148,9 +192,16 @@ const ClassSectionForm = (props) => {
       ...transformedValue
     })
   }
+  const populateTeacherSelection = (teachers) => {
+    let items = [];
+    _forEach(teachers, function(value, key) {
+      items.push(<Option value={value.id} key={value.id} >{value.full_name_last}</Option>);   
+    });
+    return items;
+  }
   return (
     <div>
-      <Form {...layout} ref={formRef} layout="horizontal" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} >
+      <Form {...layout} ref={formRef} layout="vertical" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} >
         <Form.Item label="Section Name" name="section_name" hasFeedback {...displayErrors('section_name')} rules={[{ required: true, message: 'The section name number field is required.' }]} >
           <Input autoComplete="off" placeholder="Enter Section Name" />
         </Form.Item>
@@ -166,8 +217,43 @@ const ClassSectionForm = (props) => {
             {populateTrackSelection(props.tracks)}
           </Select>
         </Form.Item>
-        <Form.Item label="Section Adviser" name="section_adviser" hasFeedback {...displayErrors('section_adviser')} rules={[{ required: true, message: 'The section adviser number field is required.' }]} >
-          <Input autoComplete="off" placeholder="Enter Section Adviser" />
+        <Form.Item label="Quarter" name="quarter_id" hasFeedback {...displayErrors('quarter_id')}  rules={[{ required: true, message: 'Please select quarter' }]} >
+          <Select
+            showSearch
+            placeholder="Select a quarter"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {populateQuarterSelection(props.quarters)}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Semester" name="semester_id" hasFeedback {...displayErrors('semester_id')}  rules={[{ required: true, message: 'Please select semester' }]} >
+          <Select
+            showSearch
+            placeholder="Select a semester"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {populateSemesterSelection(props.semesters)}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Section Adviser" name="teacher_id" hasFeedback {...displayErrors('teacher_id')} rules={[{ required: true, message: 'The section adviser number field is required.' }]} >
+          <Select
+            showSearch
+            allowClear
+            style={{ width: "100%" }}
+            placeholder="Select a Adviser"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {populateTeacherSelection(props.teachers)}
+          </Select>
         </Form.Item>
         <Form.Item label="Grade Level" name="grade_level" hasFeedback {...displayErrors('grade_level')}  rules={[{ required: true, message: 'The grade level number field is required.' }]} >
           <Select placeholder="Select a Grade Level">

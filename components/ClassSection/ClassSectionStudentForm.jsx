@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Table, Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
-import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Table, Modal, Input, Button, Divider, Select, Spin, Typography, Tabs } from 'antd';
+import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from '../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
 import _debounce from 'lodash/debounce'
+import _cloneDeep from 'lodash/cloneDeep'
 import Highlighter from 'react-highlight-words';
+import Pluralize from 'react-pluralize'
 import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 const { Option } = Select;
+const { Search } = Input;
+const { confirm } = Modal;
+const { TabPane } = Tabs;
 
 function mapStateToProps(state) {
   return {
@@ -19,30 +24,53 @@ function mapStateToProps(state) {
     selectedClassSection: state.classSection.selectedClassSection,
     tracks: state.appDefault.tracks,
     students: state.classSection.students,
+    subjects: state.classSection.subjects,
   };
 }
 const ClassSectionForm = (props) => {
   useEffect(() => {
-    getStudents(props.selectedClassSection.id);
+    getClassSection(props.selectedClassSection.id);
   }, []);
 
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [value, setValue] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [studentsStatistics, setStudentsStatistics] = useState({male: 0, female: 0, total: 0});
 
-  const getStudents = (id) => {
+  const backToClassSectionForm = () => {
+    props.dispatch({
+      type: "SET_CLASS_SECTION_FORM_TYPE",
+      data: "class-section"
+    });
+    props.dispatch({
+      type: "SELECT_CLASS_SECTION",
+      data: {}
+    });
+    props.dispatch({
+      type: "SELECT_CLASS_SECTION_STUDENTS",
+      data: []
+    });
+    props.dispatch({
+      type: "SELECT_CLASS_SECTION_SUBJECTS",
+      data: []
+    });
+  }
+
+  const getClassSection = (id) => {
     setLoading(true);
-    API.ClassSection.students(id)
+    API.ClassSection.get(id)
     .then(res => {
       setLoading(false);
       let classSection = res.data.class_sections.students.data;
-      classSection = classSection.map(x => x.student);
+      let subjects = res.data.class_sections.subjects.data;
+      popuplateStudentTable(classSection);
       props.dispatch({
-        type: "SELECT_CLASS_SECTION_STUDENTS",
-        data: classSection
+        type: "SELECT_CLASS_SECTION_SUBJECTS",
+        data: subjects
       });
-      
-      // setStudents(res.data.class_sections.students.data);
     })
     .catch(res => {
       setLoading(false);
@@ -51,6 +79,71 @@ const ClassSectionForm = (props) => {
       setLoading(false);
     })
     ;
+  }
+
+
+  const removeStudent = (student) => {
+    confirm({
+      title: `Do you Want to remove ${student.full_name_last} from ${props.selectedClassSection.section_name}?`,
+      icon: <ExclamationCircleOutlined />,
+      content: 'This will permanently remove this student and delete all its records from the class.',
+      onOk() {
+        API.ClassSection.removeStudent(props.selectedClassSection.id, student.id)
+        .then(res => {
+          let classSection = res.data.class_sections.students.data;
+          popuplateStudentTable(classSection)
+        })
+        .catch(res => {})
+        .then(res => {})
+      },
+      onCancel() {
+
+      },
+    });
+  }
+
+  const fetchStudents = _debounce((value) => {
+    setFetching(true);
+    setStudents([]);
+    let searchData = {
+      query: value
+    };
+    API.Student.all(searchData)
+    .then(res => {
+      setStudents(res.data.students.data);
+      setFetching(false);      
+    })
+    .catch(res => {
+      setFetching(false);
+    })
+    .then(res => {
+      setFetching(false);
+    })
+    ;
+    
+  }, 250)
+
+  const handleChange = (value) => {
+    let student_id = value[0].value;
+    let class_section_id = props.selectedClassSection.id;
+    let formData = {
+      student_id: student_id,
+      class_section_id: class_section_id
+    }
+    API.ClassSection.addStudent(class_section_id, formData)
+    .then(res => {
+      let classSection = res.data.class_sections.students.data;
+      popuplateStudentTable(classSection)
+      setStudents([]);
+    })
+    .catch(res => {
+      setStudents([]);
+    })
+    .then(res => {
+      setStudents([]);
+    })
+    ;
+    
   }
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -64,11 +157,11 @@ const ClassSectionForm = (props) => {
     setSearchText('');
   };
 
-  const getColumnSearchProps = dataIndex => ({
+  const getColumnSearchProps = (dataIndex, searchTitle) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }}>
         <Input
-          placeholder={`Search Full Name`}
+          placeholder={`Search ${searchTitle}`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
@@ -109,39 +202,170 @@ const ClassSectionForm = (props) => {
         text
       ),
   });
+  const popuplateStudentTable = (classSection) => {
+    props.dispatch({
+      type: "SELECT_CLASS_SECTION_STUDENTS",
+      data: classSection
+    });
+    let femaleStudents = classSection.filter(word => word.gender == "FEMALE");
+    let maleStudents = classSection.filter(word => word.gender == "MALE");
+    setStudentsStatistics({
+      female: femaleStudents.length,
+      male: maleStudents.length,
+      total: classSection.length
+    });
+  }
 
-  const dataSource = props.students;
-  const columns = [
+  const studentDataSource = props.students;
+  const studentColumns = [
     {
       title: 'ID Number',
       key: 'student_id_number',
       dataIndex: 'student_id_number',
+      ...getColumnSearchProps('student_id_number', 'student ID Number'),
     },
     {
       title: 'Full Name',
       key: 'full_name_last',
       dataIndex: 'full_name_last',
       defaultSortOrder: 'descend',
-      ...getColumnSearchProps('full_name_last'),
+      ...getColumnSearchProps('full_name_last','full name'),
     },
     {
       title: 'Gender',
       key: 'gender',
       dataIndex: 'gender',
     },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <span>
+          <a href="#!" onClick={() => {removeStudent(record)} }>Remove from the class</a>
+        </span>
+      ),
+    }
   ];
+
+  const subjectDataSource = props.subjects;
+  const subjectColumns = [
+    {
+      title: 'Category',
+      key: 'category',
+      render: (text, record) => (
+        <span>
+          {record.subject_category.name}
+        </span>
+      )
+    },
+    {
+      title: 'Subject Description',
+      key: 'subject_description',
+      dataIndex: 'subject_description',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <span>
+          <a href="#!" onClick={() => {viewGradeItem(record)} }>View Grade Items</a>
+        </span>
+      )
+    },
+  ];
+
+  const changeTabs = (value) => {
+    setActivePane(value);
+  }
+
+  const [panes, setPanes] = useState([]);
+  const [activePane, setActivePane] = useState("students");
+
+  const onEdit = (targetKey, action) => {
+    if(action == "remove"){
+      removeTab(targetKey);
+    }else{
+      addTab();
+    }
+  };
+
+  const removeTab = targetKey => {
+    let removedPaneIndex = panes.findIndex(x => x.key === targetKey);
+    panes.splice(removedPaneIndex, 1);
+    setPanes([...panes]);
+    if(removedPaneIndex <= 0){
+      setActivePane("subjects");
+    }else{
+      setActivePane(panes[removedPaneIndex-1].key);
+    }
+  };
+  const addTab = () => {
+    setPanes([...panes]);
+  };
+  const viewGradeItem = (selectedSubject) => {
+    let key = `subject_${selectedSubject.id}`;
+    let filteredPane = panes.filter(pane => pane.key == key);
+    if(_isEmpty(filteredPane)){
+      panes.push({ title: `Subject - ${selectedSubject.subject_description}`, content: 'New Tab Pane', key: key });
+      setActivePane(key);
+      setPanes([...panes]);
+    }
+  }
 
   return (
     <div>
+      <p>
+        <a href="#!" onClick={() => backToClassSectionForm()}>
+          <ArrowLeftOutlined /> Back to list of sections
+        </a>
+      </p>
       <p>Section Name: <b>{props.selectedClassSection.section_name}</b></p>
       <p>Track: <b>{props.selectedClassSection.track.name}</b></p>
       <p>Adviser: <b>{props.selectedClassSection.section_adviser}</b></p>
+      <p>
+        Total Students: <b>{studentsStatistics.total}</b>&nbsp;
+        (
+          <Pluralize singular={'Male'} count={studentsStatistics.male} zero={'0 Male'}/>,&nbsp;
+          <Pluralize singular={'Female'} count={studentsStatistics.female} zero={'0 Female'} />
+        )
+        </p>
       <p>Grade Level: <b>{props.selectedClassSection.grade_level}</b></p>
       <p>School Year: <b>{props.selectedClassSection.school_year}</b></p>
-
-      <div className="table-responsive">
-        <Table dataSource={dataSource} columns={columns} pagination={{position: "top"}}  loading={loading} />
-      </div>
+      <Tabs onChange={changeTabs} type="editable-card" activeKey={activePane} onEdit={onEdit}>
+        <TabPane tab="Students" key="students" closable={false}>
+          <div>
+            <b>Add Students:</b><br />
+            <Select
+              mode="multiple"
+              labelInValue
+              value={value}
+              placeholder="Search and select student"
+              notFoundContent={fetching ? <Spin size="small" /> : null}
+              filterOption={false}
+              onSearch={fetchStudents}
+              onChange={handleChange}
+              style={{ width: 300 }}
+            >
+              {students.map(d => (
+                <Option key={d.id}>{d.full_name_last}</Option>
+              ))}
+            </Select>
+          </div>
+          <div className="table-responsive">
+            <Table dataSource={studentDataSource} columns={studentColumns}  loading={loading} />
+          </div>
+        </TabPane>
+        <TabPane tab="Subjects" key="subjects" closable={false}>
+          <div className="table-responsive">
+            <Table dataSource={subjectDataSource} columns={subjectColumns}  loading={loading} />
+          </div>
+        </TabPane>
+        {panes.map(pane => (
+          <TabPane tab={pane.title} key={pane.key} closable={true}>
+            {pane.key}
+          </TabPane>
+        ))}
+      </Tabs>
 
     </div>
   );

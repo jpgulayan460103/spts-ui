@@ -14,22 +14,25 @@ function mapStateToProps(state) {
     sentCount: state.smsBlast.sentCount,
     recipients: state.smsBlast.recipients,
     sendStatus: state.smsBlast.sendStatus,
+    menuCollapsed: state.appDefault.menuCollapsed,
   };
 }
 const Menus = (props) => {
-  const [collapsed, setCollapsed] = useState(true);
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
   var {route} = router;
   var {id} = router.query;
 
   const onCollapse = () => {
-    setCollapsed(!collapsed);
+    props.dispatch({
+      type: "SET_MENU_COLLAPSED",
+      data: !props.menuCollapsed
+    });
   }
   
   return (
     <React.Fragment>
-        <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+        <Sider collapsible collapsed={props.menuCollapsed} onCollapse={onCollapse}>
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline">
             <Menu.Item key="/">
@@ -42,6 +45,12 @@ const Menus = (props) => {
               <UserOutlined />
               <Link href="/students">
                 <a>Students</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/teachers">
+              <UserOutlined />
+              <Link href="/teachers">
+                <a>Teacher</a>
               </Link>
             </Menu.Item>
             <Menu.Item key="/sections">

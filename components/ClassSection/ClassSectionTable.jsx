@@ -7,6 +7,7 @@ import _forEach from 'lodash/forEach'
 import API from '../../api'
 const { Search } = Input;
 const { Option } = Select;
+const { confirm } = Modal;
 
 function mapStateToProps(state) {
   return {
@@ -58,10 +59,18 @@ const ClassSectionTable = (props) => {
     });
   }
   const deleteClassSection = (classSection) => {
-    API.ClassSection.delete(classSection.id)
-    .then((res) => {
-      getClassSections(1);
-    })
+    confirm({
+      title: 'Do you Want to delete this class?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'This will permanently delete this class and all its records.',
+      onOk() {
+        API.ClassSection.delete(classSection.id)
+        .then((res) => getClassSections(1))
+        .catch((res) => getClassSections(1))
+        .then((res) => getClassSections(1))
+      },
+      onCancel() {},
+    });
   }
   const handleResidentPage = (val) => {
     getClassSections(val);
@@ -76,8 +85,6 @@ const ClassSectionTable = (props) => {
     .then((res) => {
       let result = res.data.class_sections.data;
       let resultPagination = res.data.class_sections.meta.pagination;
-      console.log(result);
-      
       setLoading(false);
       props.dispatch({
         type: "SET_CLASS_SECTIONS",
@@ -124,18 +131,21 @@ const ClassSectionTable = (props) => {
     },
     {
       title: 'Adviser',
-      dataIndex: 'section_adviser',
       key: 'section_adviser',
+      render: (text, record) => (
+        <span>
+          { record.teacher_id ? record.teacher.full_name_last : "" }
+        </span>
+      ),
     },
     {
       title: 'Action',
       key: 'action',
+      align: "center",
       render: (text, record) => (
         <span>
-          <a href="#!" onClick={() => {selectClassSection(record, "student")} }>Add Students</a>
-          &nbsp;|&nbsp;
-          <a href="#!" onClick={() => {selectClassSection(record, "class-section")} }>Edit</a>
-          &nbsp;|&nbsp;
+          <a href="#!" onClick={() => {selectClassSection(record, "student")} }>View Students</a><br />
+          <a href="#!" onClick={() => {selectClassSection(record, "class-section")} }>Edit</a><br />
           <a href="#!" onClick={() => {deleteClassSection(record)} }>Delete</a>
         </span>
       ),

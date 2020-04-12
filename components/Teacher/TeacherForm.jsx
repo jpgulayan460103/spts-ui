@@ -5,6 +5,7 @@ import API from '../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
 import _debounce from 'lodash/debounce'
+import _clone from 'lodash/clone'
 import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
@@ -13,9 +14,9 @@ const { Option } = Select;
 
 function mapStateToProps(state) {
   return {
-    formError: state.student.formError,
-    selectedStudent: state.student.selectedStudent,
-    class_sections: state.student.class_sections,
+    formError: state.teacher.formError,
+    selectedTeacher: state.teacher.selectedTeacher,
+    class_sections: state.teacher.class_sections,
   };
 }
 const handleClick = () => {}
@@ -26,21 +27,21 @@ const layout = {
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
-const StudentForm = (props) => {
+const TeacherForm = (props) => {
   useEffect(() => {
-    getClassSection();
+    // getClassSection();
   }, []);
   useEffect(() => {
-    if(!_isEmpty(props.selectedStudent)){
+    if(!_isEmpty(props.selectedTeacher)){
       setFormData({
-        ...props.selectedStudent
+        ...props.selectedTeacher
       })
       formRef.current.setFieldsValue({
-        ...props.selectedStudent
+        ...props.selectedTeacher
       });
       setFormType("update");
     }
-  }, [props.selectedStudent]);
+  }, [props.selectedTeacher]);
   const formRef = React.useRef();
   const [submit, setSubmit] = useState(false);
   const [formType, setFormType] = useState("create");
@@ -70,25 +71,25 @@ const StudentForm = (props) => {
   }
   const formSubmit = _debounce(() => {
     if(formType == "create"){
-      addStudent();
+      addTeacher();
     }else{
-      updateStudent();
+      updateTeacher();
     }
   },250);
 
-  const addStudent = () => {
-    API.Student.add(formData)
+  const addTeacher = () => {
+    API.Teacher.add(formData)
     .then(res => {
       props.dispatch({
-        type: "UPDATE_STUDENT",
-        data: res.data.students,
+        type: "UPDATE_TEACHER",
+        data: res.data.teachers,
       });
       resetForm();
     })
     .catch(res => {
       if(res.response && res.response.data){
         props.dispatch({
-          type: "STUDENT_FORM_ERROR",
+          type: "TEACHER_FORM_ERROR",
           data: res.response.data.errors
         })
       }
@@ -96,19 +97,19 @@ const StudentForm = (props) => {
     .then(res => {})
     ;
   }
-  const updateStudent = () => {
-    API.Student.update(formData,formData.id)
+  const updateTeacher = () => {
+    API.Teacher.update(formData,formData.id)
     .then(res => {
       props.dispatch({
-        type: "UPDATE_STUDENT",
-        data: res.data.students,
+        type: "UPDATE_TEACHER",
+        data: res.data.teachers,
       });
       resetForm();
     })
     .catch(res => {
       if(res.response && res.response.data){
         props.dispatch({
-          type: "STUDENT_FORM_ERROR",
+          type: "TEACHER_FORM_ERROR",
           data: res.response.data.errors
         })
       }
@@ -121,11 +122,11 @@ const StudentForm = (props) => {
     setFormData({});
     setFormType("create");
     props.dispatch({
-      type: "SELECT_STUDENT",
+      type: "SELECT_TEACHER",
       data: {}
     });
     props.dispatch({
-      type: "STUDENT_FORM_ERROR",
+      type: "TEACHER_FORM_ERROR",
       data: {}
     });
   }
@@ -150,18 +151,11 @@ const StudentForm = (props) => {
     });
   }
 
-  const populateClassSectionSelection = (section) => {
-    let items = [];
-    _forEach(section, function(value, key) {
-      items.push(<Option value={value.id} key={value.id} >{value.section_name}</Option>);   
-    });
-    return items;
-  }
   return (
     <div>
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} >
-        <Form.Item label="Student ID Number" name="student_id_number" hasFeedback {...displayErrors('student_id_number')} rules={[{ required: true, message: 'The student id number field is required.' }]} >
-          <Input autoComplete="off" placeholder="Enter Student ID Number" />
+        <Form.Item label="Teacher ID Number" name="teacher_id_number" hasFeedback {...displayErrors('teacher_id_number')} rules={[{ required: true, message: 'The teacher id number field is required.' }]} >
+          <Input autoComplete="off" placeholder="Enter Teacher ID Number" />
         </Form.Item>
         <Form.Item label="Last Name" name="last_name" hasFeedback {...displayErrors('last_name')} rules={[{ required: true, message: 'The last name field is required.' }]} >
           <Input autoComplete="off" placeholder="Enter Last Name" />
@@ -208,4 +202,4 @@ const StudentForm = (props) => {
 
 export default connect(
   mapStateToProps,
-)(StudentForm);
+)(TeacherForm);

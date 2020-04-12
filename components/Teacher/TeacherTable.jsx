@@ -11,59 +11,59 @@ const { confirm } = Modal;
 
 function mapStateToProps(state) {
   return {
-    students: state.student.students,
-    pagination: state.student.tablePagination,
-    updatedStudent: state.student.updatedStudent,
+    teachers: state.teacher.teachers,
+    pagination: state.teacher.tablePagination,
+    updatedTeacher: state.teacher.updatedTeacher,
   };
 }
 const handleClick = () => {}
-const StudentTable = (props) => {
+const TeacherTable = (props) => {
   useEffect(() => {
-    getStudents();
-  }, [props.updatedStudent]);
+    getTeachers();
+  }, [props.updatedTeacher]);
 
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState({});
-  const selectStudent = (student) => {
+  const selectTeacher = (teacher) => {
     props.dispatch({
-      type: "SELECT_STUDENT",
-      data: student
+      type: "SELECT_TEACHER",
+      data: teacher
     });
   }
-  const deleteStudent = (student) => {
+  const deleteTeacher = (teacher) => {
     confirm({
-      title: 'Do you Want to delete this student?',
+      title: 'Do you Want to delete this teacher?',
       icon: <ExclamationCircleOutlined />,
-      content: 'This will permanently delete this student and all its records.',
+      content: 'This will permanently delete this teacher and all its records.',
       onOk() {
-        API.Student.delete(student.id)
-        .then((res) => getStudents(1))
-        .catch((res) => getStudents(1))
-        .then((res) => getStudents(1))
+        API.Teacher.delete(teacher.id)
+        .then((res) => getTeachers(1))
+        .catch((res) => getTeachers(1))
+        .then((res) => getTeachers(1))
       },
       onCancel() {},
     });
   }
   const handleResidentPage = (val) => {
-    getStudents(val);
+    getTeachers(val);
   }
-  const getStudents = (page = 1) => {
+  const getTeachers = (page = 1) => {
     setLoading(true);
     let filterOptions = {
       page: page,
       ...searchData
     }
-    API.Student.all(filterOptions)
+    API.Teacher.all(filterOptions)
     .then((res) => {
-      let result = res.data.students.data;
-      let resultPagination = res.data.students.meta.pagination;
+      let result = res.data.teachers.data;
+      let resultPagination = res.data.teachers.meta.pagination;
       setLoading(false);
       props.dispatch({
-        type: "SET_STUDENTS",
+        type: "SET_TEACHERS",
         data: result
       })
       props.dispatch({
-        type: "SET_STUDENTS_PAGINATION",
+        type: "SET_TEACHERS_PAGINATION",
         data: resultPagination
       })
     })
@@ -78,12 +78,12 @@ const StudentTable = (props) => {
     let string = e.target.value;
     setSearchData({...searchData,query:string});
   }
-  const dataSource = props.students;
+  const dataSource = props.teachers;
   const columns = [
     {
       title: 'ID Number',
-      dataIndex: 'student_id_number',
-      key: 'student_id_number',
+      dataIndex: 'teacher_id_number',
+      key: 'teacher_id_number',
     },
     {
       title: 'Full Name',
@@ -100,9 +100,9 @@ const StudentTable = (props) => {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a onClick={() => {selectStudent(record)} }>Edit</a>
+          <a onClick={() => {selectTeacher(record)} }>Edit</a>
           &nbsp;|&nbsp;
-          <a onClick={() => {deleteStudent(record)} }>Delete</a>
+          <a onClick={() => {deleteTeacher(record)} }>Delete</a>
         </span>
       ),
     }
@@ -125,7 +125,7 @@ const StudentTable = (props) => {
         placeholder="input search text"
         onChange={value => setSearchString(value)}
         style={{ width: 200 }}
-        onSearch={() => {getStudents()}}
+        onSearch={() => {getTeachers()}}
       />
 
       <Divider />
@@ -133,7 +133,7 @@ const StudentTable = (props) => {
         <Table dataSource={dataSource} columns={columns} pagination={false} loading={loading} />
       </div>
       <Divider />
-      {!_isEmpty(props.students) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
+      {!_isEmpty(props.teachers) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
     </div>
   );
 }
@@ -142,4 +142,4 @@ const StudentTable = (props) => {
 
 export default connect(
   mapStateToProps,
-)(StudentTable);
+)(TeacherTable);
