@@ -18,5 +18,8 @@ export default {
   },
   get(id){
     return axios.get(`${axios.custom_base_url}api/subjects/${id}`);
+  },
+  categories(id){
+    return axios.get(`${axios.custom_base_url}api/subject-categories`);
   }
 }

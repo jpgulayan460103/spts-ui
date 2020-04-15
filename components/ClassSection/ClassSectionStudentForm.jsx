@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, Modal, Input, Button, Divider, Select, Spin, Typography, Tabs } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import ScoreItemsForm from './Subjects/ScoreItemsForm'
 import API from '../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
@@ -306,11 +307,17 @@ const ClassSectionForm = (props) => {
     let key = `subject_${selectedSubject.id}`;
     let filteredPane = panes.filter(pane => pane.key == key);
     if(_isEmpty(filteredPane)){
-      panes.push({ title: `Subject - ${selectedSubject.subject_description}`, content: 'New Tab Pane', key: key });
+      panes.push({
+        title: `Subject - ${selectedSubject.subject_description}`,
+        content: 'New Tab Pane',
+        key: key,
+        data: selectedSubject, 
+      });
       setActivePane(key);
       setPanes([...panes]);
     }
   }
+  
 
   return (
     <div>
@@ -362,7 +369,7 @@ const ClassSectionForm = (props) => {
         </TabPane>
         {panes.map(pane => (
           <TabPane tab={pane.title} key={pane.key} closable={true}>
-            {pane.key}
+            <ScoreItemsForm subject={pane.data} />
           </TabPane>
         ))}
       </Tabs>

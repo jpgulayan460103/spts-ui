@@ -33,5 +33,8 @@
 }
 .ant-layout-sider-children{
   color: rgba(0, 0, 0, 0.6);
-
+}
+.anticon{
+  position: relative !important;
+  top: -0.25em !important;
 }

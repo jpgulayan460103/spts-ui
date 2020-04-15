@@ -6,6 +6,7 @@ import Track from './Track'
 import Teacher from './Teacher'
 import Quarter from './Quarter'
 import Semester from './Semester'
+import ScoreItem from './ScoreItem'
 
 
 export default {
@@ -17,4 +18,5 @@ export default {
   Teacher,
   Quarter,
   Semester,
+  ScoreItem,
 }

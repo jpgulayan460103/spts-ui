@@ -6,6 +6,7 @@ import subject from './subjectReducer'
 import appDefault from './appDefaultReducer'
 import classSection from './classSectionReducer'
 import smsBlast from './smsBlastReducer'
+import scoreItem from './scoreItemReducer'
 
 const rootReducer = combineReducers({
   user,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   appDefault,
   classSection,
   smsBlast,
+  scoreItem,
 })
 
 export default rootReducer
