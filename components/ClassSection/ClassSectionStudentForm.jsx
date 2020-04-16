@@ -276,6 +276,10 @@ const ClassSectionForm = (props) => {
   ];
 
   const changeTabs = (value) => {
+    if(value.search("subject_") == 0){
+      console.log("teas");
+      
+    }
     setActivePane(value);
   }
 

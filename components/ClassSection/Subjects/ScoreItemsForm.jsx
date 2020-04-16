@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Button, Tooltip } from 'antd';
+import { Button, Tooltip, Input, InputNumber } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import ScoreCategoryItemsForm from './ScoreCategoryItemsForm';
+const { Search } = Input;
 
 function mapStateToProps(state) {
   return {
@@ -18,45 +20,19 @@ const ScoreItemsForm = (props) => {
 
   }
   
+  
 
   return (
     <div>
       <div className="row">
         <div className="col-md-4">
-          <b>
-          { props.subject.subject_category.grading_systems.data[0].category }
-          :&nbsp;
-          { `${props.subject.subject_category.grading_systems.data[0].grading_system * 100}%` }
-          </b>
-          &nbsp;
-          <Tooltip title="Add Score Items">
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} />
-          </Tooltip>
-          <br />
+          <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[0]} subject={props.subject} />
         </div>
         <div className="col-md-4">
-          <b>
-          { props.subject.subject_category.grading_systems.data[1].category }
-          :&nbsp;
-          { `${props.subject.subject_category.grading_systems.data[1].grading_system * 100}%` }
-          </b>
-          &nbsp;
-          <Tooltip title="Add Score Items">
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} />
-          </Tooltip>
-          <br />
+          <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[1]} subject={props.subject} />
         </div>
         <div className="col-md-4">
-          <b>
-          { props.subject.subject_category.grading_systems.data[2].category }
-          :&nbsp;
-          { `${props.subject.subject_category.grading_systems.data[2].grading_system * 100}%` }
-          </b>
-          &nbsp;
-          <Tooltip title="Add Score Items">
-            <Button type="primary" shape="circle" icon={<PlusOutlined />} />
-          </Tooltip>
-          <br />
+          <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[2]} subject={props.subject} />
         </div>
       </div>
     </div>
