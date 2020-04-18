@@ -34,18 +34,24 @@ const Layouts = ({children}) => {
   }
   return (
     <Provider store={store}>
+      <Headers />
       <Layout style={{ minHeight: '100vh' }}>
         <Menus />
         <Layout className="site-layout">
-          <Header />
-          <Headers />
+          {/* <Header /> */}
           <br />
-          <Content style={{...containerLayout.containerStyle}}>
+          <Content style={{...containerLayout.containerStyle}} >
             <div {...containerLayout.containerChildDivClassName} style={{ padding: 24, minHeight: '100%' }}>
               {children}
             </div>
           </Content>
-          {/* <Footer style={{ textAlign: 'center' }}>Student Performance Tracking System</Footer> */}
+          <Footer style={{ textAlign: 'center' }}>
+            <div>
+              {/* <img src="/images/logo.png" className="h-10 w-10 full mx-auto" alt=""/> */}
+              &copy; 2020 Student Performance Tracking System<br />
+            </div>
+             
+          </Footer>
         </Layout>
         <BackTop />
       </Layout>

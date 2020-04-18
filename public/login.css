@@ -1,4 +1,4 @@
-@import "tailwindcss/base";
+/* @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
@@ -12,10 +12,10 @@
   background: #fff;
 }
 .site-layout-background-index{
-  /* background: ; */
+  background: ;
 }
 .logo{
-  /* height: 60px; */
+  height: 60px;
 }
 .navbar-brand {
   display: flex;
@@ -37,4 +37,8 @@
 .anticon{
   position: relative;
   top: -0.25em;
+} */
+
+body{
+  background-color: lightblue;
 }

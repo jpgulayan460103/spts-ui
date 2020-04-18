@@ -19,11 +19,14 @@ export class index extends Component {
       <Provider store={store}>
         <Head>
           <title>Login</title>
+          <link rel="stylesheet" type="text/css" href="/login.css"></link>
         </Head>
         <div className="container-fluid">
             <div className="row justify-content-center">
-              <div className="col-md-4">
-                <LoginForm />
+              <div className="col-md-3">
+                <div className="mt-20 p-10" style={{border: "1px solid black"}}>
+                  <LoginForm />
+                </div>
               </div>
             </div>
           </div>

@@ -77,10 +77,12 @@ class Headers extends Component {
   }
   render() {
     return (
-      <div>
-      <Navbar color="light" light expand="md" fixed="top">
+      <React.Fragment>
+      <Navbar color="light" light expand="md">
         <NavbarBrand href="#!"  onClick={() => this.redirect('') }>
-        {/* STUDENT PERFORMANCE TRACKING SYSTEM */}
+        <img src="/images/logo.png" className="h-16 w-16 mr-2 full mx-auto float-left" alt=""/> 
+        <span className="pl-1">STUDENT PERFORMANCE</span><br />
+        <span className="pl-1">TRACKING SYSTEM</span>
         </NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
@@ -98,7 +100,7 @@ class Headers extends Component {
           </Nav>
         </Collapse>
       </Navbar>
-    </div>
+    </React.Fragment>
     );
   }
 }

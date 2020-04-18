@@ -15,10 +15,10 @@ const SubjectIndex = (props) => {
       </Head>
       <Layouts>
         <div className="row">
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <SubjectStudentForm />
-          </div>
-          <div className="col-md-9">
+          </div> */}
+          <div className="col-md-12">
             <SubjectTable />
           </div>
         </div>

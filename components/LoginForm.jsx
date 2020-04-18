@@ -71,8 +71,9 @@ class LoginForm extends Component {
   }
   render() {
     return (
-      <div className="pt-16">
-        <img src="/images/logo.png" className="h-40 w-40 rounded-full mx-auto" alt=""/>
+      <div>
+        <img src="/images/logo.png" className="h-40 w-40 full mx-auto" alt=""/>
+        <h3 style={{textAlign: "center"}} className="mb-10">Account Login</h3>
         <Form
           {...layout}
           name="basic"
@@ -84,7 +85,7 @@ class LoginForm extends Component {
           onFinishFailed={this.onFinishFailed}
         >
           <Form.Item
-            label="Username"
+            label=""
             name="username"
             rules={[
               {
@@ -97,7 +98,7 @@ class LoginForm extends Component {
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label=""
             name="password"
             rules={[
               {
