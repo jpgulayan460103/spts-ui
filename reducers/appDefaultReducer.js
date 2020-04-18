@@ -4,6 +4,7 @@ const initialState = () => {
     quarters: [],
     semesters: [],
     teachers: [],
+    transmutedGrades: [],
     menuCollapsed: false,
   }
 }
@@ -24,6 +25,9 @@ export default function appDefaultReducer(state = initialState(), action) {
       return state;
     case 'SET_SEMESTERS':
       state.semesters = action.data;
+      return state;
+    case 'SET_TRANSMUTED_GRADES':
+      state.transmutedGrades = action.data;
       return state;
     default:
       return state;

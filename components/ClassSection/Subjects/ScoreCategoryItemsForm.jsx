@@ -14,6 +14,10 @@ const handleClick = () => {}
 const ScoreCategoryItemsForm = (props) => {
   useEffect(() => {
     getScoreItems();
+    return () => {
+      console.log("remvoe");
+      
+    }
   }, []);
   const [showForm, setShowForm] = useState(false);
   const [scoreItem, setScoreItem] = useState(null);

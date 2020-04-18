@@ -19,6 +19,7 @@ function mapStateToProps(state) {
     semesters: state.appDefault.semesters,
     quarters: state.appDefault.quarters,
     teachers: state.appDefault.teachers,
+    transmutedGrades: state.appDefault.transmutedGrades,
   };
 }
 const handleClick = () => {}
@@ -35,6 +36,7 @@ const ClassSectionForm = (props) => {
     _isEmpty(props.teachers) ? getTeachers() : null;
     _isEmpty(props.quarters) ? getQuarters() : null;
     _isEmpty(props.semesters) ? getSemesters() : null;
+    _isEmpty(props.transmutedGrade) ? getTransmutedGrade() : null;
   }, []);
   useEffect(() => {
     if(!_isEmpty(props.selectedClassSection)){
@@ -76,6 +78,14 @@ const ClassSectionForm = (props) => {
         data: res.data.semesters.data
       });
     });
+  }
+  const getTransmutedGrade = () => {
+    API.Semester.getTransmutedGrade().then(res => {
+      props.dispatch({
+        type: "SET_TRANSMUTED_GRADES",
+        data: res.data.transmuted_grades
+      });
+    })
   }
   const getTeachers = () => {
     API.Teacher.all({getall: 1}).then(res => {

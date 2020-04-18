@@ -14,6 +14,12 @@ const initialState = () => {
     searchData: {},
     students: [],
     subjects: [],
+    selectedSubject: [],
+    scoreItems: {
+      'ww': [],
+      'pt': [],
+      'qe': [],
+    },
   }
 }
 
@@ -48,6 +54,9 @@ export default function residentReducer(state = initialState(), action) {
       return state
     case 'SELECT_CLASS_SECTION_SUBJECTS':
       state.subjects = action.data;
+      return state
+    case 'SELECT_CLASS_SECTION_SUBJECT':
+      state.selectedSubject = action.data;
       return state
 
     default:

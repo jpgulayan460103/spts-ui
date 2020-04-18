@@ -267,9 +267,10 @@ const ClassSectionForm = (props) => {
     {
       title: 'Action',
       key: 'action',
+      align: "center",
       render: (text, record) => (
         <span>
-          <a href="#!" onClick={() => {viewGradeItem(record)} }>View Grade Items</a>
+          <a href="#!" onClick={() => {viewGradeItem(record)} }>Manage</a>
         </span>
       )
     },
@@ -277,8 +278,14 @@ const ClassSectionForm = (props) => {
 
   const changeTabs = (value) => {
     if(value.search("subject_") == 0){
-      console.log("teas");
+      let valueSplit = value.split("_");
+      let id = valueSplit[1];
       
+      let selectedSubject = props.subjects.filter(item => item.id == id);
+      props.dispatch({
+        type: "SELECT_CLASS_SECTION_SUBJECT",
+        data: selectedSubject[0],
+      });
     }
     setActivePane(value);
   }
@@ -301,6 +308,14 @@ const ClassSectionForm = (props) => {
     if(removedPaneIndex <= 0){
       setActivePane("subjects");
     }else{
+      let toPane = panes[removedPaneIndex-1].key;
+      let valueSplit = toPane.split("_");
+      let id = valueSplit[1];
+      let selectedSubject = props.subjects.filter(item => item.id == id);
+      props.dispatch({
+        type: "SELECT_CLASS_SECTION_SUBJECT",
+        data: selectedSubject[0],
+      });
       setActivePane(panes[removedPaneIndex-1].key);
     }
   };
@@ -319,7 +334,13 @@ const ClassSectionForm = (props) => {
       });
       setActivePane(key);
       setPanes([...panes]);
+    }else{
+      setActivePane(key);
     }
+    props.dispatch({
+      type: "SELECT_CLASS_SECTION_SUBJECT",
+      data: selectedSubject,
+    });
   }
   
 

@@ -45,7 +45,7 @@ const Layouts = ({children}) => {
               {children}
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Student Performance Tracking System</Footer>
+          {/* <Footer style={{ textAlign: 'center' }}>Student Performance Tracking System</Footer> */}
         </Layout>
         <BackTop />
       </Layout>

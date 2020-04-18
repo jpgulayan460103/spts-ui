@@ -18,5 +18,8 @@ export default {
   },
   get(id){
     return axios.get(`${axios.custom_base_url}api/semesters/${id}`);
+  },
+  getTransmutedGrade(){
+    return axios.get(`${axios.custom_base_url}api/transmuted-grades`);
   }
 }

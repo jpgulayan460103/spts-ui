@@ -80,7 +80,7 @@ class Headers extends Component {
       <div>
       <Navbar color="light" light expand="md" fixed="top">
         <NavbarBrand href="#!"  onClick={() => this.redirect('') }>
-        STUDENT PERFORMANCE TRACKING SYSTEM
+        {/* STUDENT PERFORMANCE TRACKING SYSTEM */}
         </NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
