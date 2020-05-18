@@ -100,9 +100,9 @@ const TeacherTable = (props) => {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a onClick={() => {selectTeacher(record)} }>Edit</a>
+          <a href="#!" onClick={() => {selectTeacher(record)} }>Edit</a>
           &nbsp;|&nbsp;
-          <a onClick={() => {deleteTeacher(record)} }>Delete</a>
+          <a href="#!" onClick={() => {deleteTeacher(record)} }>Delete</a>
         </span>
       ),
     }

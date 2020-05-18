@@ -3,20 +3,20 @@ import axios from './axios-settings'
 export default {
   
   add(formdata){
-    return axios.post(`${axios.custom_base_url}api/quarters`,formdata);
+    return axios.post(`/api/quarters`,formdata);
   },
   update(formdata,id){
-    return axios.put(`${axios.custom_base_url}api/quarters/${id}`,formdata);
+    return axios.put(`/api/quarters/${id}`,formdata);
   },
   delete(id){
-    return axios.delete(`${axios.custom_base_url}api/quarters/${id}`);
+    return axios.delete(`/api/quarters/${id}`);
   },
   all(formData){
-    return axios.get(`${axios.custom_base_url}api/quarters`,{
+    return axios.get(`/api/quarters`,{
       params: formData
     });
   },
   get(id){
-    return axios.get(`${axios.custom_base_url}api/quarters/${id}`);
+    return axios.get(`/api/quarters/${id}`);
   }
 }

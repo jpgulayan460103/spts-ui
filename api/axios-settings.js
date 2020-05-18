@@ -2,15 +2,17 @@ import axios from 'axios'
 import ls from 'local-storage'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Router from 'next/router'
+import NProgress from 'nprogress';
 
-
-axios.custom_base_url = "http://api.spts.uct11.com/";
+axios.defaults.baseURL = 'http://spts.test/';
 if(ls('user')){
   let token = ls('user').access_token;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   axios.interceptors.response.use((response) => {
+    NProgress.start();
     return response;
   }, (error) => {
+    NProgress.done();
     console.log(error);
     if (error.response && error.response.status == 401) {
       Swal.fire({
@@ -54,4 +56,11 @@ if(ls('user')){
     return Promise.reject(error);
   });
 }
+
+axios.interceptors.response.use(function (response) {
+  NProgress.done();
+  return response;
+}, function (error) {
+  return Promise.reject(error);
+});
 export default axios;

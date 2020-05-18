@@ -3,20 +3,20 @@ import axios from './axios-settings'
 export default {
   
   add(formdata){
-    return axios.post(`${axios.custom_base_url}api/tracks`,formdata);
+    return axios.post(`/api/tracks`,formdata);
   },
   update(formdata,id){
-    return axios.put(`${axios.custom_base_url}api/tracks/${id}`,formdata);
+    return axios.put(`/api/tracks/${id}`,formdata);
   },
   delete(id){
-    return axios.delete(`${axios.custom_base_url}api/tracks/${id}`);
+    return axios.delete(`/api/tracks/${id}`);
   },
   all(formData){
-    return axios.get(`${axios.custom_base_url}api/tracks`,{
+    return axios.get(`/api/tracks`,{
       params: formData
     });
   },
   get(id){
-    return axios.get(`${axios.custom_base_url}api/tracks/${id}`);
+    return axios.get(`/api/tracks/${id}`);
   }
 }

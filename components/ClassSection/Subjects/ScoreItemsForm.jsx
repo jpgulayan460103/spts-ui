@@ -6,6 +6,7 @@ import ScoreCategoryItemsForm from './ScoreCategoryItemsForm';
 import API from '../../../api'
 import _isEmpty from 'lodash/isEmpty'
 import _cloneDeep from 'lodash/cloneDeep'
+
 import { InputGroup } from 'reactstrap';
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -32,10 +33,6 @@ const ScoreItemsForm = (props) => {
   const [currentTab, setCurrentTab] = useState([])
 
   const addScore = (e, record, item, studentIndex) => {
-    
-    // console.log(item);
-    // grading_systems[0].score_items = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
-    
     let score = e.target.value;
     let formData = {
       score: score,
@@ -45,13 +42,10 @@ const ScoreItemsForm = (props) => {
       subject_id: props.selectedSubject.id,
       grading_system_id: item.grading_system_id,
     };
-    console.log(students[studentIndex].scores);
-    console.log(item);
     let scoreIndex = students[studentIndex].scores.findIndex(score => score.score_item_id == item.id);
-    console.log(scoreIndex);
-    
-    students[studentIndex].scores[scoreIndex].score = score;
-    // console.log(students[studentIndex].scores[0].score);
+    if(students[studentIndex].scores[scoreIndex]){
+      students[studentIndex].scores[scoreIndex].score = score;
+    }
 
     let propsStudents = students.map(item => {
       return item;
@@ -59,12 +53,13 @@ const ScoreItemsForm = (props) => {
     setStudents(propsStudents);
     
     
+    // getScores();
     API.Score.add(formData)
     .then(res => {
       let student_scores = res.data.scores;
-      // console.log(gradingSystem[0].id);
+      getScores();
       computeGrade(student_scores, studentIndex, gradingSystem);
-      changeTab(currentTab);
+      // changeTab(currentTab);
     })
     .catch(err => {})
     .then(res => {})
@@ -138,7 +133,7 @@ const ScoreItemsForm = (props) => {
         student.grade = parseFloat(ww_score_ws) + parseFloat(pt_score_ws) + parseFloat(qe_score_ws);
         filteredTransmutedGrades = props.transmutedGrades.filter(grade => grade.grade < student.grade);
         transmutedGrade = filteredTransmutedGrades[filteredTransmutedGrades.length - 1];
-        student.transmuted_grade = transmutedGrade.transmuted_grade;
+        student.transmuted_grade = transmutedGrade ? transmutedGrade.transmuted_grade : 0;
 
       }
       return student;
@@ -348,43 +343,47 @@ const ScoreItemsForm = (props) => {
     // setGradingSystem([]);
     setCurrentTab(key);
     if(key == "1" || key == "3"){
-      let formData = {
-        class_section_id: props.selectedClassSection.id,
-        subject_id: props.selectedSubject.id,
-      }
-      API.ScoreItem.all(formData)
-      .then(res => {
-        let score_items = res.data.score_items;
-        let student_scores = res.data.scores;
-        let grading_systems = res.data.grading_systems;
-        grading_systems[0].score_items = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
-        grading_systems[0].total = score_items
-          .filter(item => item.grading_system_id == grading_systems[0].id)
-          .reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.item;
-          }, 0);
-        grading_systems[1].score_items = score_items.filter(item => item.grading_system_id == grading_systems[1].id);
-        grading_systems[1].total = score_items
-          .filter(item => item.grading_system_id == grading_systems[1].id)
-          .reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.item;
-          }, 0);
-        grading_systems[2].score_items = score_items.filter(item => item.grading_system_id == grading_systems[2].id);
-        grading_systems[2].total = score_items
-          .filter(item => item.grading_system_id == grading_systems[2].id)
-          .reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.item;
-          }, 0);
-        setGradingSystem(grading_systems);
-        setScores(res.data.scores);
-        let mapScoresToStudents = students.map((student, studentIndex) => {
-          student.scores = student_scores.filter(score => score.student_id == student.id);
-          computeGrade(student.scores, studentIndex, grading_systems);
-          return student;
-        });
-        setStudents(mapScoresToStudents);
-      })
+      getScores();
     }
+  }
+
+  const getScores = () => {
+    let formData = {
+      class_section_id: props.selectedClassSection.id,
+      subject_id: props.selectedSubject.id,
+    }
+    API.ScoreItem.all(formData)
+    .then(res => {
+      let score_items = res.data.score_items;
+      let student_scores = res.data.scores;
+      let grading_systems = res.data.grading_systems;
+      grading_systems[0].score_items = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
+      grading_systems[0].total = score_items
+        .filter(item => item.grading_system_id == grading_systems[0].id)
+        .reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.item;
+        }, 0);
+      grading_systems[1].score_items = score_items.filter(item => item.grading_system_id == grading_systems[1].id);
+      grading_systems[1].total = score_items
+        .filter(item => item.grading_system_id == grading_systems[1].id)
+        .reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.item;
+        }, 0);
+      grading_systems[2].score_items = score_items.filter(item => item.grading_system_id == grading_systems[2].id);
+      grading_systems[2].total = score_items
+        .filter(item => item.grading_system_id == grading_systems[2].id)
+        .reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.item;
+        }, 0);
+      setGradingSystem(grading_systems);
+      setScores(res.data.scores);
+      let mapScoresToStudents = students.map((student, studentIndex) => {
+        student.scores = student_scores.filter(score => score.student_id == student.id);
+        computeGrade(student.scores, studentIndex, grading_systems);
+        return student;
+      });
+      setStudents(mapScoresToStudents);
+    })
   }
   
 

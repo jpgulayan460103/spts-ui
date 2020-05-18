@@ -32,6 +32,7 @@ const StudentForm = (props) => {
   }, []);
   useEffect(() => {
     if(!_isEmpty(props.selectedStudent)){
+      props.selectedStudent.username = props.selectedStudent.user.username;
       setFormData({
         ...props.selectedStudent
       })
@@ -181,16 +182,14 @@ const StudentForm = (props) => {
             <Option value="FEMALE">FEMALE</Option>
           </Select>
         </Form.Item>
-        {formType == "create" ? (
-          <React.Fragment>
-            <Form.Item label="Username" name="username" hasFeedback {...displayErrors('username')}>
-              <Input autoComplete="off" placeholder="Enter Username" />
-            </Form.Item>
-            <Form.Item label="Password" name="password" hasFeedback {...displayErrors('password')}>
-              <Input autoComplete="off" placeholder="Enter Password" />
-            </Form.Item>
-          </React.Fragment>
-        ) : ""}
+        <React.Fragment>
+          <Form.Item label="Username" name="username" hasFeedback {...displayErrors('username')}>
+            <Input autoComplete="off" placeholder="Enter Username" />
+          </Form.Item>
+          <Form.Item label="Password" name="password" hasFeedback {...displayErrors('password')}>
+            <Input autoComplete="off" placeholder="Enter Password" />
+          </Form.Item>
+        </React.Fragment>
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit" disabled={submit} loading={submit}>
             Submit

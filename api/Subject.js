@@ -3,23 +3,23 @@ import axios from './axios-settings'
 export default {
   
   add(formdata){
-    return axios.post(`${axios.custom_base_url}api/subjects`,formdata);
+    return axios.post(`/api/subjects`,formdata);
   },
   update(formdata,id){
-    return axios.put(`${axios.custom_base_url}api/subjects/${id}`,formdata);
+    return axios.put(`/api/subjects/${id}`,formdata);
   },
   delete(id){
-    return axios.delete(`${axios.custom_base_url}api/subjects/${id}`);
+    return axios.delete(`/api/subjects/${id}`);
   },
   all(formData){
-    return axios.get(`${axios.custom_base_url}api/subjects`,{
+    return axios.get(`/api/subjects`,{
       params: formData
     });
   },
   get(id){
-    return axios.get(`${axios.custom_base_url}api/subjects/${id}`);
+    return axios.get(`/api/subjects/${id}`);
   },
   categories(id){
-    return axios.get(`${axios.custom_base_url}api/subject-categories`);
+    return axios.get(`/api/subject-categories`);
   }
 }

@@ -3,23 +3,23 @@ import axios from './axios-settings'
 export default {
   
   add(formdata){
-    return axios.post(`${axios.custom_base_url}api/barangay-officials`,formdata);
+    return axios.post(`/api/barangay-officials`,formdata);
   },
   update(formdata,id){
-    return axios.put(`${axios.custom_base_url}api/barangay-officials/${id}`,formdata);
+    return axios.put(`/api/barangay-officials/${id}`,formdata);
   },
   delete(id){
-    return axios.delete(`${axios.custom_base_url}api/barangay-officials/${id}`);
+    return axios.delete(`/api/barangay-officials/${id}`);
   },
   all(formData){
-    return axios.get(`${axios.custom_base_url}api/barangay-officials`,{
+    return axios.get(`/api/barangay-officials`,{
       params: formData
     });
   },
   getBarangay(){
-    return axios.get(`${axios.custom_base_url}api/psgcs/dropdown`);
+    return axios.get(`/api/psgcs/dropdown`);
   },
   get(id){
-    return axios.get(`${axios.custom_base_url}api/barangay-officials/${id}`);
+    return axios.get(`/api/barangay-officials/${id}`);
   }
 }
