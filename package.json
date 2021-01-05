@@ -17,7 +17,7 @@
     "@zeit/next-less": "^1.0.1",
     "antd": "^4.0.2",
     "autoprefixer": "^9.7.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "less": "^3.11.1",
     "local-storage": "^2.0.0",
