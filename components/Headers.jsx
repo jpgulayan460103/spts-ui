@@ -44,7 +44,7 @@ class Headers extends Component {
       return (
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav>
-            {this.props.user.username} <CaretDownOutlined />
+            {this.props.user ? this.props.user.username : ""} <CaretDownOutlined />
           </DropdownToggle>
           <DropdownMenu right>
             <DropdownItem>

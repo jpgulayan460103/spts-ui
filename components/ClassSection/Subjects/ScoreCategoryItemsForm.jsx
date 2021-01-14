@@ -101,7 +101,10 @@ const ScoreCategoryItemsForm = (props) => {
       <br />
       <br />
       { showForm ? (
-        <InputNumber min={1} max={999} defaultValue={scoreItem} placeholder="Type score items" onChange={setItem} onPressEnter={addScoreItem} />
+        <>
+          <InputNumber min={1} max={999} defaultValue={scoreItem} placeholder="Type score items" onChange={setItem} onPressEnter={addScoreItem} />
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => addScoreItem()} />
+        </>
       ) : "" }
       <List
         size="small"

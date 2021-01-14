@@ -6,6 +6,7 @@ import ScoreCategoryItemsForm from './ScoreCategoryItemsForm';
 import API from '../../../api'
 import _isEmpty from 'lodash/isEmpty'
 import _cloneDeep from 'lodash/cloneDeep'
+import _debounce from 'lodash/debounce'
 
 import { InputGroup } from 'reactstrap';
 const { Search } = Input;
@@ -32,8 +33,10 @@ const ScoreItemsForm = (props) => {
   const [scores, setScores] = useState([])
   const [currentTab, setCurrentTab] = useState([])
 
-  const addScore = (e, record, item, studentIndex) => {
-    let score = e.target.value;
+  const addValueScore = _debounce((e, record, item, studentIndex) => {
+    // let score = e.target.value;
+    let score = e;
+    console.log(score);
     let formData = {
       score: score,
       student_id: record.id,
@@ -50,21 +53,18 @@ const ScoreItemsForm = (props) => {
     let propsStudents = students.map(item => {
       return item;
     });
-    setStudents(propsStudents);
-    
-    
-    // getScores();
+    // setStudents(propsStudents);
     API.Score.add(formData)
     .then(res => {
       let student_scores = res.data.scores;
-      getScores();
-      computeGrade(student_scores, studentIndex, gradingSystem);
-      // changeTab(currentTab);
+      // getScores();
+      // computeGrade(student_scores, studentIndex, gradingSystem);
     })
     .catch(err => {})
     .then(res => {})
     ;
-  }
+  }, 0)
+
 
   const computeGrade = (student_scores, studentIndex, gradingSystem) => {
     let student_score_total = 0;
@@ -134,6 +134,7 @@ const ScoreItemsForm = (props) => {
         filteredTransmutedGrades = props.transmutedGrades.filter(grade => grade.grade < student.grade);
         transmutedGrade = filteredTransmutedGrades[filteredTransmutedGrades.length - 1];
         student.transmuted_grade = transmutedGrade ? transmutedGrade.transmuted_grade : 0;
+        student.grade = student.grade.toFixed(2);
 
       }
       return student;
@@ -168,12 +169,28 @@ const ScoreItemsForm = (props) => {
         return (
           <div style={{float: "left"}}>
             <div style={{textAlign: "center"}}>{item.item}</div>
-            <InputNumber size="small" style={{width: 90}} min={0} max={item.item} value={studentScore} defaultValue={studentScore} onBlur={(e) => addScore(e, record, item, index)} />
+            <InputScoreComponent item={item} studentScore={studentScore} record={record} index={index} key={`${index}_${selectedGradingSystem}`} />
           </div>
         );
         // return (<span>{item.item} </span>);
       });
     }
+  }
+
+  const InputScoreComponent = ({item, studentScore, record, index }) => {
+    let score = studentScore == null ? 0 : studentScore;
+    const [inputValue, setinputValue] = useState(score);
+    const textInput = React.createRef();
+    return (
+      <span>
+        <InputNumber ref={textInput} size="small" style={{width: 90}} min={0} max={item.item} value={inputValue} defaultValue={inputValue} onBlur={(e) => {
+            let val = textInput.current.inputNumberRef.currentValue;
+            addValueScore(val, record, item, index);
+            setinputValue(val);
+          }
+        } />
+      </span>
+    );
   }
 
   const columnWidth = (selectedGradingSystem) => {

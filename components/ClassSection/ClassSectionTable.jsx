@@ -85,6 +85,10 @@ const ClassSectionTable = (props) => {
     .then((res) => {
       let result = res.data.class_sections.data;
       let resultPagination = res.data.class_sections.meta.pagination;
+      result.map((item, index) => {
+        item.key = `class_section_${index}`;
+        return item;
+      });
       setLoading(false);
       props.dispatch({
         type: "SET_CLASS_SECTIONS",

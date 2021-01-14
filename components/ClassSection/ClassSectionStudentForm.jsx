@@ -67,6 +67,14 @@ const ClassSectionForm = (props) => {
       setLoading(false);
       let classSection = res.data.class_sections.students.data;
       let subjects = res.data.class_sections.subjects.data;
+      classSection.map((item, index) => {
+        item.key = `classsection_${index}`;
+        return item;
+      });
+      subjects.map((item, index) => {
+        item.key = `students_${index}`;
+        return item;
+      });
       popuplateStudentTable(classSection);
       props.dispatch({
         type: "SELECT_CLASS_SECTION_SUBJECTS",

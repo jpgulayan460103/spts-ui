@@ -57,6 +57,10 @@ const TeacherTable = (props) => {
     .then((res) => {
       let result = res.data.teachers.data;
       let resultPagination = res.data.teachers.meta.pagination;
+      result.map((item, index) => {
+        item.key = `teachers_${index}`;
+        return item;
+      });
       setLoading(false);
       props.dispatch({
         type: "SET_TEACHERS",
