@@ -53,7 +53,8 @@ class LoginForm extends Component {
         type: "USER_LOGIN_SUCCESSFUL",
         data: res.data
       });
-      Router.push('/')
+      window.location = "/";
+      // Router.push('/')
     })
     .catch(err => {
       if(err.response && err.response.data){
