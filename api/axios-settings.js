@@ -4,8 +4,8 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Router from 'next/router'
 import NProgress from 'nprogress';
 
-// axios.defaults.baseURL = 'http://spts.test/';
-axios.defaults.baseURL = 'https://api-spts.jbdavao.com';
+axios.defaults.baseURL = 'http://spts.test/';
+// axios.defaults.baseURL = 'https://api-spts.jbdavao.com';
 if(ls('user')){
   let token = ls('user').access_token;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`

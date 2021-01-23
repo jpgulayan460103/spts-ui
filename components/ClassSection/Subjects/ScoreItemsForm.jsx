@@ -234,7 +234,6 @@ const ScoreItemsForm = (props) => {
         <span>
           {record.full_name_last}<br />
           [{record.student_id_number}]<br />
-          <span onClick={() => testClick(index)}>test</span>
         </span>
       ),
     },
@@ -374,31 +373,57 @@ const ScoreItemsForm = (props) => {
       let score_items = res.data.score_items;
       let student_scores = res.data.scores;
       let grading_systems = res.data.grading_systems;
-      grading_systems[0].score_items = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
-      grading_systems[0].total = score_items
-        .filter(item => item.grading_system_id == grading_systems[0].id)
+      let score_items_0 = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
+      grading_systems[0].score_items = score_items_0;
+      grading_systems[0].total = score_items_0
         .reduce((accumulator, currentValue) => {
           return accumulator + currentValue.item;
         }, 0);
-      grading_systems[1].score_items = score_items.filter(item => item.grading_system_id == grading_systems[1].id);
-      grading_systems[1].total = score_items
-        .filter(item => item.grading_system_id == grading_systems[1].id)
+      let score_items_1 = score_items.filter(item => item.grading_system_id == grading_systems[1].id);
+      grading_systems[1].score_items = score_items_1;
+      grading_systems[1].total = score_items_1
         .reduce((accumulator, currentValue) => {
           return accumulator + currentValue.item;
         }, 0);
-      grading_systems[2].score_items = score_items.filter(item => item.grading_system_id == grading_systems[2].id);
-      grading_systems[2].total = score_items
-        .filter(item => item.grading_system_id == grading_systems[2].id)
+      let score_items_2 = score_items.filter(item => item.grading_system_id == grading_systems[2].id);
+      grading_systems[2].score_items = score_items_2;
+      grading_systems[2].total = score_items_2
         .reduce((accumulator, currentValue) => {
           return accumulator + currentValue.item;
         }, 0);
       setGradingSystem(grading_systems);
       setScores(res.data.scores);
+      console.log(score_items_0);
+      console.log(score_items_1);
+      console.log(score_items_2);
       let mapScoresToStudents = students.map((student, studentIndex) => {
         student.scores = student_scores.filter(score => score.student_id == student.id);
+        score_items.forEach(element => {
+          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
+          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+        });
+
+
+        /* 
+        
+        score_items_0.forEach(element => {
+          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
+          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+        });
+        score_items_1.forEach(element => {
+          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
+          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+        });
+        score_items_2.forEach(element => {
+          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
+          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+        });
+        
+        */
         computeGrade(student.scores, studentIndex, grading_systems);
         return student;
       });
+      console.log(mapScoresToStudents);
       setStudents(mapScoresToStudents);
     })
   }
@@ -421,10 +446,10 @@ const ScoreItemsForm = (props) => {
           </div>
         </TabPane>
         <TabPane tab="Scores" key="1">
-          <Table pagination={false} dataSource={studentDataSource} columns={studentScoreColumns} scroll={{ x: 600, y: 240 }} />
+          <Table bordered pagination={false} dataSource={studentDataSource} columns={studentScoreColumns} scroll={{ x: 600, y: 240 }} />
         </TabPane>
         <TabPane tab="Grades" key="3">
-          <Table pagination={false} dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ x: 600, y: 240 }} />
+          <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ x: 600, y: 240 }} />
         </TabPane>
       </Tabs>
     </div>
