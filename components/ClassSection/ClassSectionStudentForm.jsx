@@ -13,6 +13,7 @@ import Pluralize from 'react-pluralize'
 import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
+import { values } from 'lodash';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -40,6 +41,7 @@ const ClassSectionForm = (props) => {
   const [fetching, setFetching] = useState(false);
   const [students, setStudents] = useState([]);
   const [studentsStatistics, setStudentsStatistics] = useState({male: 0, female: 0, total: 0});
+  const [units, setUnits] = useState([]);
 
   const backToClassSectionForm = () => {
     props.dispatch({
@@ -350,6 +352,43 @@ const ClassSectionForm = (props) => {
       data: selectedSubject,
     });
   }
+
+  const addUnit = (e) => {
+    let name = e.target.value;
+    let formData = {
+      class_section_id: props.selectedClassSection.id, 
+      unit_name: name, 
+    };
+    API.Unit.add(formData)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {})
+    ;
+  }
+
+  const changeCategoryTabs = (value) => {
+    if(value == "category-1"){
+      API.Unit.get(props.selectedClassSection.id)
+      .then(res => {
+        let result = res.data.units;
+        result.map((item, index) => {
+          item.key = `unit_${index}`;
+          return item;
+        });
+        setUnits(result);
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .then(res => {})
+      ;
+    }
+  }
   
 
   return (
@@ -402,7 +441,33 @@ const ClassSectionForm = (props) => {
         </TabPane>
         {panes.map(pane => (
           <TabPane tab={pane.title} key={pane.key} closable={true}>
-            <ScoreItemsForm subject={pane.data} />
+            {/* <ScoreItemsForm subject={pane.data} /> */}
+
+            <Tabs defaultActiveKey="category-2" type="card" onChange={changeCategoryTabs}>
+              <TabPane tab="Units" key="category-1">
+                <Tabs type="card">
+                  {
+                    units.map(unit => (
+                      <TabPane tab={unit.unit_name} key={unit.key}>
+                        <ScoreItemsForm subject={pane.data} unitId={unit.id} />
+                      </TabPane>
+                    ) )
+                  }
+                </Tabs>
+              </TabPane>
+              <TabPane tab="Unit Summary" key="category-2">
+                {/* <ScoreItemsForm subject={pane.data} /> */}
+                <Input
+                  placeholder={`Add Unit Name`}
+                  onChange={e =>  {}  }
+                  onPressEnter={(e) => { addUnit(e) } }
+                  style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+              </TabPane>
+              <TabPane tab="Attendance" key="category-3">
+                {/* <ScoreItemsForm subject={pane.data} /> */}
+              </TabPane>
+            </Tabs>
           </TabPane>
         ))}
       </Tabs>

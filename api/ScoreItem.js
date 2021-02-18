@@ -30,7 +30,8 @@ export default {
     let {class_section_id, subject_id} = formData;
     return axios.get(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items`,{
       params: {
-        grading_system_id: formData.grading_system_id
+        grading_system_id: formData.grading_system_id,
+        unit_id: formData.unit_id
       }
     });
   },

@@ -38,3 +38,7 @@
   position: relative;
   top: -0.25em;
 }
+
+#quiztable tr td{
+  text-align: center;
+}

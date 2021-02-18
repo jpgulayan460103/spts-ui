@@ -43,6 +43,7 @@ const ScoreCategoryItemsForm = (props) => {
       grading_system_id: props.gradingSystem.id,
       item: scoreItem,
       quiz_name: quizName,
+      unit_id: props.unitId
     }
     
     API.ScoreItem.add(formData)
@@ -78,6 +79,7 @@ const ScoreCategoryItemsForm = (props) => {
       class_section_id: props.selectedClassSection.id,
       subject_id: props.subject.id,
       grading_system_id: props.gradingSystem.id,
+      unit_id: props.unitId
     }
     API.ScoreItem.all(formData)
     .then(res => {

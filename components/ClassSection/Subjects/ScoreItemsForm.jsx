@@ -7,6 +7,7 @@ import API from '../../../api'
 import _isEmpty from 'lodash/isEmpty'
 import _cloneDeep from 'lodash/cloneDeep'
 import _debounce from 'lodash/debounce'
+import QuizTable from "./QuizTable";
 
 import { InputGroup } from 'reactstrap';
 const { Search } = Input;
@@ -22,6 +23,44 @@ function mapStateToProps(state) {
   };
 }
 const handleClick = () => {}
+const defaultCols = [
+  {
+    title: 'Full Name',
+    key: 'student',
+    width: 300,
+    render: (text, record, index) => (
+      <span>
+        {record.full_name_last}<br />
+        [{record.student_id_number}]<br />
+      </span>
+    ),
+  },
+  {
+    title: 'Written Work',
+    key: 'ww',
+    width: 100,
+    render: (text, record, index) => (
+      <span>1</span>
+    ),
+  },
+  {
+    title: 'Performance Test',
+    key: 'pt',
+    width: 100,
+    render: (text, record, index) => (
+      <span>2</span>
+    ),
+  },
+  {
+    title: 'Quarterly Exam',
+    key: 'qe',
+    width: 100,
+    render: (text, record, index) => (
+      <span>3</span>
+    ),
+  },
+];
+
 const ScoreItemsForm = (props) => {
   useEffect(() => {
     setStudents(props.students);
@@ -31,7 +70,8 @@ const ScoreItemsForm = (props) => {
   const [gradingSystem, setGradingSystem] = useState([])
   const [students, setStudents] = useState([])
   const [scores, setScores] = useState([])
-  const [currentTab, setCurrentTab] = useState([])
+  const [currentTab, setCurrentTab] = useState([]);
+  const [quizCols, setQuizCols] = useState(defaultCols);
 
   const addValueScore = _debounce((e, record, item, studentIndex) => {
     // let score = e.target.value;
@@ -224,6 +264,7 @@ const ScoreItemsForm = (props) => {
 
 
   const studentDataSource = students;
+  const studentScoreColumnsV2 = quizCols;
   const studentScoreColumns = [
     {
       title: 'Full Name',
@@ -367,6 +408,7 @@ const ScoreItemsForm = (props) => {
     let formData = {
       class_section_id: props.selectedClassSection.id,
       subject_id: props.selectedSubject.id,
+      unit_id: props.unitId
     }
     API.ScoreItem.all(formData)
     .then(res => {
@@ -392,15 +434,73 @@ const ScoreItemsForm = (props) => {
           return accumulator + currentValue.item;
         }, 0);
       setGradingSystem(grading_systems);
+      // console.log(grading_systems);
       setScores(res.data.scores);
-      console.log(score_items_0);
-      console.log(score_items_1);
-      console.log(score_items_2);
+      // let cols = quizCols;
+      let cols = [];
+      let score_items_0_total = 0;
+      score_items_0.forEach(element => {
+        score_items_0_total += element.item;
+        cols.push(
+          { title: `${element.quiz_name}`, dataIndex: `item-${element.grading_system_id}-${element.id}`, key: `item-${element.grading_system_id}-${element.id}`, show: true, editable: true, value: element.item }
+        );
+      });
+      cols.push({ title: `Total`, dataIndex: `ww_score_total`, key: `ww_score_total`, show: true, editable: false, value: score_items_0_total });
+      // cols.push({ title: `ww_score_total_items`, dataIndex: `ww_score_total_items`, key: `ww_score_total_items`, show: true, editable: false });
+      cols.push({ title: `PS`, dataIndex: `ww_score_ps`, key: `ww_score_ps`, show: true, editable: false, value: 100 });
+      cols.push({ title: `WS`, dataIndex: `ww_score_ws`, key: `ww_score_ws`, show: true, editable: false, value: (grading_systems[0].grading_system * 100).toFixed(2) });
+
+      let score_items_1_total = 0;
+      score_items_1.forEach(element => {
+        score_items_1_total += element.item;
+        cols.push(
+          { title: `${element.quiz_name}`, dataIndex: `item-${element.grading_system_id}-${element.id}`, key: `item-${element.grading_system_id}-${element.id}`, show: true, editable: true, value: element.item }
+        );
+      });
+      
+      cols.push({ title: `Total`, dataIndex: `pt_score_total`, key: `pt_score_total`, show: true, editable: false, value: score_items_1_total });
+      // cols.push({ title: `pt_score_total_items`, dataIndex: `pt_score_total_items`, key: `pt_score_total_items`, show: true, editable: false });
+      cols.push({ title: `PS`, dataIndex: `pt_score_ps`, key: `pt_score_ps`, show: true, editable: false, value: 100 });
+      cols.push({ title: `WS`, dataIndex: `pt_score_ws`, key: `pt_score_ws`, show: true, editable: false, value: (grading_systems[1].grading_system * 100).toFixed(2) });
+
+      let score_items_2_total = 0;
+      score_items_2.forEach(element => {
+        score_items_2_total += element.item;
+        cols.push(
+          { title: `${element.quiz_name}`, dataIndex: `item-${element.grading_system_id}-${element.id}`, key: `item-${element.grading_system_id}-${element.id}`, show: true, editable: true, value: element.item }
+        );
+      });
+
+      cols.push({ title: `Total`, dataIndex: `qe_score_total`, key: `qe_score_total`, show: true, editable: false, value: score_items_2_total });
+      // cols.push({ title: `qe_score_total_items`, dataIndex: `qe_score_total_items`, key: `qe_score_total_items`, show: true, editable: false });
+      cols.push({ title: `PS`, dataIndex: `qe_score_ps`, key: `qe_score_ps`, show: true, editable: false, value: 100 });
+      cols.push({ title: `WS`, dataIndex: `qe_score_ws`, key: `qe_score_ws`, show: true, editable: false, value: (grading_systems[2].grading_system * 100).toFixed(2) });
+
+      cols.push({ title: `grade`, dataIndex: `grade`, key: `grade`, show: false, editable: false, value: 0 });
+      cols.push({ title: `transmuted_grade`, dataIndex: `transmuted_grade`, key: `transmuted_grade`, show: false, editable: false, value: 0 });
+
+
+      setQuizCols(cols);
       let mapScoresToStudents = students.map((student, studentIndex) => {
         student.scores = student_scores.filter(score => score.student_id == student.id);
+        student.mappedScores = [];
         score_items.forEach(element => {
+          // console.log(element);
           let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
           student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+
+          student.mappedScores.push({
+            scoreKey: `item-${element.grading_system_id}-${element.id}`,
+            score: _isEmpty(item_score) ? {
+              class_section_id: props.selectedClassSection.id,
+              grading_system_id: element.grading_system_id,
+              score_item_id: element.id,
+              student_id: student.id,
+              subject_id: props.selectedSubject.id,
+              items: element.item
+            } : {...item_score[0], items: element.item}
+          });
+
         });
 
 
@@ -423,6 +523,7 @@ const ScoreItemsForm = (props) => {
         computeGrade(student.scores, studentIndex, grading_systems);
         return student;
       });
+      
       console.log(mapScoresToStudents);
       setStudents(mapScoresToStudents);
     })
@@ -432,24 +533,25 @@ const ScoreItemsForm = (props) => {
   return (
     <div>
       <Tabs onChange={changeTab} defaultActiveKey="2" type="card">
-        <TabPane tab="Score Items" key="2">
+        <TabPane tab="Quizzes" key="2">
           <div className="row">
             <div className="col-md-4">
-              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[0]} subject={props.subject} />
+              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[0]} subject={props.subject}  unitId={props.unitId} />
             </div>
             <div className="col-md-4">
-              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[1]} subject={props.subject} />
+              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[1]} subject={props.subject}  unitId={props.unitId} />
             </div>
             <div className="col-md-4">
-              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[2]} subject={props.subject} />
+              <ScoreCategoryItemsForm gradingSystem={props.subject.subject_category.grading_systems.data[2]} subject={props.subject}  unitId={props.unitId} />
             </div>
           </div>
         </TabPane>
         <TabPane tab="Scores" key="1">
-          <Table bordered pagination={false} dataSource={studentDataSource} columns={studentScoreColumns} scroll={{ x: 600, y: 240 }} />
+          <QuizTable getScores={getScores} dataSource={studentDataSource} columns={quizCols} gradingSystem={gradingSystem} unitId={props.unitId} />
+          {/* <Table bordered pagination={false} dataSource={studentDataSource} columns={studentScoreColumnsV2} scroll={{ y: 240 }} /> */}
         </TabPane>
         <TabPane tab="Grades" key="3">
-          <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ x: 600, y: 240 }} />
+          <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ y: 240 }} />
         </TabPane>
       </Tabs>
     </div>

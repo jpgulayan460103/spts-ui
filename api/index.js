@@ -8,6 +8,7 @@ import Quarter from './Quarter'
 import Semester from './Semester'
 import ScoreItem from './ScoreItem'
 import Score from './Score'
+import Unit from './Unit'
 
 
 export default {
@@ -21,4 +22,5 @@ export default {
   Semester,
   ScoreItem,
   Score,
+  Unit,
 }
