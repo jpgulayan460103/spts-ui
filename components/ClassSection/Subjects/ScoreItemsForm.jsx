@@ -328,15 +328,6 @@ const ScoreItemsForm = (props) => {
       key: 'ww',
       render: (text, record, index) => (
         <span>
-          {record.ww_score_total}/{record.ww_score_total_items} = {record.ww_score_ps}
-        </span>
-      ),
-    },
-    {
-      title: `WS`,
-      key: 'wp_ws',
-      render: (text, record, index) => (
-        <span>
           { record.ww_score_ws }
         </span>
       ),
@@ -346,15 +337,6 @@ const ScoreItemsForm = (props) => {
       key: 'pt',
       render: (text, record, index) => (
         <span>
-          {record.pt_score_total}/{record.pt_score_total_items} = {record.pt_score_ps}
-        </span>
-      ),
-    },
-    {
-      title: `WS`,
-      key: 'pt_ws',
-      render: (text, record, index) => (
-        <span>
           { record.pt_score_ws }
         </span>
       ),
@@ -362,15 +344,6 @@ const ScoreItemsForm = (props) => {
     {
       title: `Quarterly Exam ${gradeLabel(gradingSystem[2])}`,
       key: 'qe',
-      render: (text, record, index) => (
-        <span>
-          {record.qe_score_total}/{record.qe_score_total_items} = {record.qe_score_ps}
-        </span>
-      ),
-    },
-    {
-      title: `WS`,
-      key: 'pt_ws',
       render: (text, record, index) => (
         <span>
           { record.qe_score_ws }
@@ -546,11 +519,11 @@ const ScoreItemsForm = (props) => {
             </div>
           </div>
         </TabPane>
-        <TabPane tab="Scores" key="1">
+        <TabPane tab="Unit Scoreboard" key="1">
           <QuizTable getScores={getScores} dataSource={studentDataSource} columns={quizCols} gradingSystem={gradingSystem} unitId={props.unitId} />
           {/* <Table bordered pagination={false} dataSource={studentDataSource} columns={studentScoreColumnsV2} scroll={{ y: 240 }} /> */}
         </TabPane>
-        <TabPane tab="Grades" key="3">
+        <TabPane tab="Unit Summary" key="3">
           <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ y: 240 }} />
         </TabPane>
       </Tabs>

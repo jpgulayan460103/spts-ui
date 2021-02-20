@@ -27,6 +27,7 @@ function mapStateToProps(state) {
     tracks: state.appDefault.tracks,
     students: state.classSection.students,
     subjects: state.classSection.subjects,
+    selectedSubject: state.classSection.selectedSubject,
   };
 }
 const ClassSectionForm = (props) => {
@@ -296,6 +297,7 @@ const ClassSectionForm = (props) => {
         type: "SELECT_CLASS_SECTION_SUBJECT",
         data: selectedSubject[0],
       });
+      getUnits(selectedSubject[0]);
     }
     setActivePane(value);
   }
@@ -351,17 +353,36 @@ const ClassSectionForm = (props) => {
       type: "SELECT_CLASS_SECTION_SUBJECT",
       data: selectedSubject,
     });
+    getUnits(selectedSubject);
   }
 
   const addUnit = (e) => {
     let name = e.target.value;
     let formData = {
       class_section_id: props.selectedClassSection.id, 
+      subject_id: props.selectedSubject.id, 
       unit_name: name, 
     };
     API.Unit.add(formData)
     .then(res => {
-      console.log(res);
+      // console.log(res);
+      getUnits(props.selectedSubject);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {})
+    ;
+  }
+
+  const confirmDeleteUnit = (unit) => {
+    deleteUnit(unit.id);
+  }
+
+  const deleteUnit = (id) => {
+    API.Unit.delete(id)
+    .then(res => {
+      getUnits(props.selectedSubject);
     })
     .catch(err => {
       console.log(err);
@@ -371,8 +392,17 @@ const ClassSectionForm = (props) => {
   }
 
   const changeCategoryTabs = (value) => {
-    if(value == "category-1"){
-      API.Unit.get(props.selectedClassSection.id)
+    getUnits(props.selectedSubject);
+    // if(value == "category-1"){
+    // }
+  }
+
+  const getUnits = (selectedSubject) => {
+    let formData = {
+      class_section_id: props.selectedClassSection.id,
+      subject_id: selectedSubject.id
+    };
+    API.Unit.all(formData)
       .then(res => {
         let result = res.data.units;
         result.map((item, index) => {
@@ -380,15 +410,47 @@ const ClassSectionForm = (props) => {
           return item;
         });
         setUnits(result);
-        console.log(result);
+        // console.log(result);
       })
       .catch(err => {
         console.log(err);
       })
       .then(res => {})
       ;
-    }
   }
+
+
+  const unitColumns = [
+    {
+      title: 'Unit Name',
+      key: 'unit_name',
+      render: (text, record) => (
+        <span>
+          { record.unit_name }
+        </span>
+      )
+    },
+    {
+      title: 'Subject Description',
+      key: 'subject_description',
+      render: (text, record) => (
+        <span>
+          { record.subject.subject_description }
+        </span>
+      )
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      align: "center",
+      render: (text, record) => (
+        <span>
+          <a href="#!" onClick={() => {  } }>Edit</a> | <a href="#!" onClick={() => { confirmDeleteUnit(record) } }>Delete</a>
+        </span>
+      )
+    },
+  ];
+
   
 
   return (
@@ -455,7 +517,7 @@ const ClassSectionForm = (props) => {
                   }
                 </Tabs>
               </TabPane>
-              <TabPane tab="Unit Summary" key="category-2">
+              <TabPane tab="List of Units" key="category-2">
                 {/* <ScoreItemsForm subject={pane.data} /> */}
                 <Input
                   placeholder={`Add Unit Name`}
@@ -463,6 +525,7 @@ const ClassSectionForm = (props) => {
                   onPressEnter={(e) => { addUnit(e) } }
                   style={{ width: 188, marginBottom: 8, display: 'block' }}
                 />
+                <Table dataSource={units} columns={unitColumns}  loading={loading} />
               </TabPane>
               <TabPane tab="Attendance" key="category-3">
                 {/* <ScoreItemsForm subject={pane.data} /> */}
