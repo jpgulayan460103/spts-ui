@@ -63,7 +63,8 @@ const defaultCols = [
 
 const ScoreItemsForm = (props) => {
   useEffect(() => {
-    setStudents(props.students);
+    let studentsClone = _cloneDeep(props.students);
+    setStudents(studentsClone);
   }, [props.students]);
 
 
@@ -155,7 +156,7 @@ const ScoreItemsForm = (props) => {
       qe_score_ws = (qe_score_ps * gradingSystem[2].grading_system).toFixed(2);
     }
     
-    let propsStudents = props.students.map((student, index) => {
+    let propsStudents = students.map((student, index) => {
       if(studentIndex == index){
         student.ww_score_total = ww_score_total;
         student.pt_score_total = pt_score_total;
