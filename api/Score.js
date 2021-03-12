@@ -4,7 +4,11 @@ export default {
   
   add(formdata){
     let {class_section_id, subject_id, score_item_id} = formdata;
-    return axios.post(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items/${score_item_id}`,formdata);
+    return axios.post(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items/${score_item_id}/score`,formdata);
+  },
+  addMultiple(formdata){
+    let {class_section_id, subject_id, score_item_id} = formdata;
+    return axios.post(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items/${score_item_id}/score-multiple`,formdata);
   },
   update(formdata,id){
     return axios.put(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items/${score_item_id}/${id}`,formdata);

@@ -263,6 +263,26 @@ const ScoreItemsForm = (props) => {
     }
   }
 
+  const wsRemarks = (gs, ws) => {
+    gs = gs * 100;
+    let res = ws/gs;
+    if(res >= 0.8){
+      return "Excellent";
+    }else if(res < 0.8 && res >= 0.6){
+      return "Satisfactory";
+    }else{
+      return "Needs Improvement";
+    }
+  }
+
+  const remarksGrade = (grade) => {
+    if(grade >= 75){
+      return "Passed";
+    }else{
+      return "Failed";
+    }
+  }
+
 
   const studentDataSource = students;
   const studentScoreColumnsV2 = quizCols;
@@ -320,7 +340,6 @@ const ScoreItemsForm = (props) => {
         <span>
           {record.full_name_last}<br />
           [{record.student_id_number}]<br />
-          <span onClick={() => testClick(index)}>test</span>
         </span>
       ),
     },
@@ -334,6 +353,15 @@ const ScoreItemsForm = (props) => {
       ),
     },
     {
+      title: `Written Work Remarks`,
+      key: 'ww_remarks',
+      render: (text, record, index) => (
+        <span>
+          { wsRemarks(props.selectedSubject.subject_category.grading_systems.data[0].grading_system, record.ww_score_ws) }
+        </span>
+      ),
+    },
+    {
       title: `Performance Test ${gradeLabel(gradingSystem[1])}`,
       key: 'pt',
       render: (text, record, index) => (
@@ -343,11 +371,29 @@ const ScoreItemsForm = (props) => {
       ),
     },
     {
+      title: `Performance Test Remarks`,
+      key: 'pt_remarks',
+      render: (text, record, index) => (
+        <span>
+          { wsRemarks(props.selectedSubject.subject_category.grading_systems.data[1].grading_system, record.pt_score_ws) }
+        </span>
+      ),
+    },
+    {
       title: `Quarterly Exam ${gradeLabel(gradingSystem[2])}`,
       key: 'qe',
       render: (text, record, index) => (
         <span>
           { record.qe_score_ws }
+        </span>
+      ),
+    },
+    {
+      title: `Quarterly Exam Remarks`,
+      key: 'qe_remarks',
+      render: (text, record, index) => (
+        <span>
+          { wsRemarks(props.selectedSubject.subject_category.grading_systems.data[2].grading_system, record.qe_score_ws) }
         </span>
       ),
     },
@@ -366,6 +412,15 @@ const ScoreItemsForm = (props) => {
       render: (text, record, index) => (
         <span>
           { record.transmuted_grade }
+        </span>
+      ),
+    },
+    {
+      title: `Remarks`,
+      key: 'remarks',
+      render: (text, record, index) => (
+        <span>
+          { remarksGrade(record.transmuted_grade) }
         </span>
       ),
     },
@@ -458,21 +513,31 @@ const ScoreItemsForm = (props) => {
       let mapScoresToStudents = students.map((student, studentIndex) => {
         student.scores = student_scores.filter(score => score.student_id == student.id);
         student.mappedScores = [];
-        score_items.forEach(element => {
-          // console.log(element);
-          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
-          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+        score_items.forEach(scoreItem => {
+          let item_score = student_scores.filter(score => score.score_item_id == scoreItem.id && score.student_id == student.id);
+          student[`item-${scoreItem.grading_system_id}-${scoreItem.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
+          let current_grading_system = grading_systems.filter(item => item.id == scoreItem.grading_system_id);
+          // console.log(current_grading_system);
+          if(!_isEmpty(item_score)){
+            item_score[0].quiz_name = scoreItem.quiz_name;
+            item_score[0].grading_system_name = current_grading_system[0].category;
+            item_score[0].type = "update";
+          }
 
           student.mappedScores.push({
-            scoreKey: `item-${element.grading_system_id}-${element.id}`,
+            scoreKey: `item-${scoreItem.grading_system_id}-${scoreItem.id}`,
             score: _isEmpty(item_score) ? {
               class_section_id: props.selectedClassSection.id,
-              grading_system_id: element.grading_system_id,
-              score_item_id: element.id,
+              grading_system_id: scoreItem.grading_system_id,
+              score_item_id: scoreItem.id,
               student_id: student.id,
               subject_id: props.selectedSubject.id,
-              items: element.item
-            } : {...item_score[0], items: element.item}
+              items: scoreItem.item,
+              type: "create",
+              quiz_name: scoreItem.quiz_name,
+              score: 0,
+              grading_system_name: current_grading_system[0].category
+            } : {...item_score[0], items: scoreItem.item}
           });
 
         });
@@ -498,7 +563,7 @@ const ScoreItemsForm = (props) => {
         return student;
       });
       
-      console.log(mapScoresToStudents);
+      // console.log(mapScoresToStudents);
       setStudents(mapScoresToStudents);
     })
   }
