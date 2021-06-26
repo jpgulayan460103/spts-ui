@@ -17,10 +17,19 @@ const Layouts = ({children}) => {
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
   var {route} = router;
+  const [userRole, setUserRole] = useState("");
   useEffect(() => {
     let user = ls('user');
+    let role = user.user.roles[0].name;
+    setUserRole(role);
     if(!user){
       Router.push('/login')
+    }else{
+      if(role == "teacher"){
+        Router.push('/sections')
+        if(route == "/"){
+        }
+      }
     }
   }, []);
   const [collapsed, setCollapsed] = useState(true);
@@ -36,7 +45,7 @@ const Layouts = ({children}) => {
     <Provider store={store}>
       <Headers />
       <Layout style={{ minHeight: '100vh' }}>
-        <Menus />
+        { userRole == "admin" ? <Menus /> : <></> }
         <Layout className="site-layout">
           {/* <Header /> */}
           <br />

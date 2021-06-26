@@ -15,6 +15,7 @@ function mapStateToProps(state) {
     recipients: state.smsBlast.recipients,
     sendStatus: state.smsBlast.sendStatus,
     menuCollapsed: state.appDefault.menuCollapsed,
+    role: state.user.role,
   };
 }
 const Menus = (props) => {
@@ -35,36 +36,47 @@ const Menus = (props) => {
         <Sider collapsible collapsed={props.menuCollapsed} onCollapse={onCollapse}>
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline">
-            <Menu.Item key="/">
-              <DashboardOutlined />
-              <Link href="/">
-                <a>Dashboard</a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="/students">
-              <UserOutlined />
-              <Link href="/students">
-                <a>Students</a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="/teachers">
-              <UserOutlined />
-              <Link href="/teachers">
-                <a>Teacher</a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="/sections">
-              <UserOutlined />
-              <Link href="/sections">
-                <a>Sections</a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="/subjects">
-              <UserOutlined />
-              <Link href="/subjects">
-                <a>Subjects</a>
-              </Link>
-            </Menu.Item>
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/">
+                <DashboardOutlined />
+                <Link href="/">
+                  <a>Dashboard</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/students">
+                <UserOutlined />
+                <Link href="/students">
+                  <a>Students</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/teachers">
+                <UserOutlined />
+                <Link href="/teachers">
+                  <a>Teacher</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" || props.role.name == "teacher" ? (
+              <Menu.Item key="/sections">
+                <UserOutlined />
+                <Link href="/sections">
+                  <a>Sections</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/subjects">
+                <UserOutlined />
+                <Link href="/subjects">
+                  <a>Subjects</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+
           </Menu>
         </Sider>
       </React.Fragment>

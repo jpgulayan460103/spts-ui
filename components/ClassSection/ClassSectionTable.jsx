@@ -18,6 +18,7 @@ function mapStateToProps(state) {
     updatedClassSection: state.classSection.updatedClassSection,
     selectedClassSection: state.classSection.selectedClassSection,
     tracks: state.appDefault.tracks,
+    role: state.user.role,
   };
 }
 const handleClick = () => {}
@@ -149,8 +150,16 @@ const ClassSectionTable = (props) => {
       render: (text, record) => (
         <span>
           <a href="#!" onClick={() => {selectClassSection(record, "student")} }>View Students</a><br />
-          <a href="#!" onClick={() => {selectClassSection(record, "class-section")} }>Edit</a><br />
-          <a href="#!" onClick={() => {deleteClassSection(record)} }>Delete</a>
+          { props.role.name == "admin" ? (
+            <React.Fragment>
+              <a href="#!" onClick={() => {selectClassSection(record, "class-section")} }>Edit</a><br />
+            </React.Fragment>
+          ) : <></> }
+          { props.role.name == "admin" ? (
+            <React.Fragment>
+              <a href="#!" onClick={() => {deleteClassSection(record)} }>Delete</a>
+            </React.Fragment>
+          ) : <></> }
         </span>
       ),
     }
@@ -199,7 +208,10 @@ const ClassSectionTable = (props) => {
         optionFilterProp="children"
         onChange={setTrackFilter}
       >
-        {populateTrackSelection(props.tracks)}
+        <Option value="1">ACADEMIC TRACK – Accountancy, Business and Management (ABM)</Option>
+        <Option value="2">ACADEMIC TRACK – General Academic Strand (GAS)</Option>
+        <Option value="3">TECHNICAL VOCATIONAL TRACK – Home Economics Strand</Option>
+        <Option value="4">TECHNICAL VOCATIONAL TRACK – Information and Communications Technology</Option>
       </Select>
       <Button type="primary" icon={<SearchOutlined />} onClick={() => {getClassSections()}}>
         Search

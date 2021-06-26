@@ -5,6 +5,7 @@ const initialState = () => {
     isLogged: false,
     accessToken: "",
     user: {},
+    role: "",
   }
 }
 
@@ -13,6 +14,7 @@ const userLoginDetail = () => {
   state.isLogged = true;
   state.user = ls('user').user;
   state.accessToken = ls('user').access_token;
+  state.role = ls('user').user.roles[0];
   return state;
 }
 
@@ -29,6 +31,7 @@ export default function userReducer(state = initialState(), action) {
         isLogged: true,
         accessToken: action.data.accessToken,
         user: action.data.user,
+        role: action.data.user.roles[0],
       };
       return state
     case 'USER_LOGIN_FAILED':
