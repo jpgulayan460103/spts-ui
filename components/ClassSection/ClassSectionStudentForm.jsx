@@ -517,6 +517,8 @@ const ClassSectionForm = (props) => {
                   }
                 </Tabs>
               </TabPane>
+
+
               <TabPane tab="List of Units" key="category-2">
                 {/* <ScoreItemsForm subject={pane.data} /> */}
                 <Input
@@ -527,9 +529,7 @@ const ClassSectionForm = (props) => {
                 />
                 <Table dataSource={units} columns={unitColumns}  loading={loading} />
               </TabPane>
-              <TabPane tab="Attendance" key="category-3">
-                {/* <ScoreItemsForm subject={pane.data} /> */}
-              </TabPane>
+              
             </Tabs>
           </TabPane>
         ))}

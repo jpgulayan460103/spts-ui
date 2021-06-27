@@ -587,10 +587,13 @@ const ScoreItemsForm = (props) => {
         </TabPane>
         <TabPane tab="Unit Scoreboard" key="1">
           <QuizTable getScores={getScores} dataSource={studentDataSource} columns={quizCols} gradingSystem={gradingSystem} unitId={props.unitId} />
-          {/* <Table bordered pagination={false} dataSource={studentDataSource} columns={studentScoreColumnsV2} scroll={{ y: 240 }} /> */}
         </TabPane>
         <TabPane tab="Unit Summary" key="3">
           <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ y: 240 }} />
+        </TabPane>
+
+        <TabPane tab="Attendance" key="4">
+          {/* <ScoreItemsForm subject={pane.data} /> */}
         </TabPane>
       </Tabs>
     </div>
