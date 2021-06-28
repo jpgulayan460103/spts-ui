@@ -20,11 +20,11 @@ const Layouts = ({children}) => {
   const [userRole, setUserRole] = useState("");
   useEffect(() => {
     let user = ls('user');
-    let role = user.user.roles[0].name;
-    setUserRole(role);
     if(!user){
       Router.push('/login')
     }else{
+      let role = user.user.roles[0].name;
+      setUserRole(role);
       if(role == "teacher"){
         Router.push('/sections')
         if(route == "/"){

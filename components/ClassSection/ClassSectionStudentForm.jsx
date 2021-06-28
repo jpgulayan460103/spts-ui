@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, Modal, Input, Button, Divider, Select, Spin, Typography, Tabs } from 'antd';
-import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined, SaveOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import ScoreItemsForm from './Subjects/ScoreItemsForm'
 import API from '../../api'
 import _forEach from 'lodash/forEach'
@@ -43,6 +43,9 @@ const ClassSectionForm = (props) => {
   const [students, setStudents] = useState([]);
   const [studentsStatistics, setStudentsStatistics] = useState({male: 0, female: 0, total: 0});
   const [units, setUnits] = useState([]);
+  const [unitTextbox, setUnitTextbox] = useState("");
+  const [unitFormType, setUnitFormType] = useState("create");
+  const [selectedUnit, setSelectedUnit] = useState([]);
 
   const backToClassSectionForm = () => {
     props.dispatch({
@@ -356,8 +359,17 @@ const ClassSectionForm = (props) => {
     getUnits(selectedSubject);
   }
 
+  const submitUnitForm = () => {
+    if(unitFormType == "create"){
+      addUnit();
+    }else{
+      updateUnit();
+    }
+  }
+
   const addUnit = (e) => {
-    let name = e.target.value;
+    // let name = e.target.value;
+    let name = unitTextbox;
     let formData = {
       class_section_id: props.selectedClassSection.id, 
       subject_id: props.selectedSubject.id, 
@@ -374,9 +386,50 @@ const ClassSectionForm = (props) => {
     .then(res => {})
     ;
   }
+  const updateUnit = (e) => {
+    // let name = e.target.value;
+    let name = unitTextbox;
+    let formData = {
+      unit_name: name, 
+    };
+    API.Unit.update(formData, selectedUnit.id)
+    .then(res => {
+      // console.log(res);
+      cancelEditUnit();
+      getUnits(props.selectedSubject);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {})
+    ;
+  }
 
   const confirmDeleteUnit = (unit) => {
-    deleteUnit(unit.id);
+
+    confirm({
+      title: `Do you want to remove ${unit.unit_name}?`,
+      icon: <ExclamationCircleOutlined />,
+      content: 'This will permanently remove all data on this unit.',
+      onOk() {
+        deleteUnit(unit.id);
+      },
+      onCancel() {
+
+      },
+    });
+  }
+
+  const editUnit = (unit) => {
+    setUnitFormType("update");
+    setUnitTextbox(unit.unit_name);
+    setSelectedUnit(unit);
+  }
+
+  const cancelEditUnit = () => {
+    setUnitFormType("create");
+    setUnitTextbox("");
+    setSelectedUnit([]);
   }
 
   const deleteUnit = (id) => {
@@ -445,7 +498,7 @@ const ClassSectionForm = (props) => {
       align: "center",
       render: (text, record) => (
         <span>
-          <a href="#!" onClick={() => {  } }>Edit</a> | <a href="#!" onClick={() => { confirmDeleteUnit(record) } }>Delete</a>
+          <a href="#!" onClick={() => { editUnit(record)  } }>Edit</a> | <a href="#!" onClick={() => { confirmDeleteUnit(record) } }>Delete</a>
         </span>
       )
     },
@@ -523,11 +576,37 @@ const ClassSectionForm = (props) => {
                 {/* <ScoreItemsForm subject={pane.data} /> */}
                 <Input
                   placeholder={`Add Unit Name`}
-                  onChange={e =>  {}  }
-                  onPressEnter={(e) => { addUnit(e) } }
+                  onChange={(e) => { setUnitTextbox(e.target.value) } }
                   style={{ width: 188, marginBottom: 8, display: 'block' }}
+                  value={unitTextbox}
                 />
+
+                <Button
+                  type="primary"
+                  onClick={() => submitUnitForm()}
+                  icon={<SaveOutlined />}
+                  size="small"
+                  style={{ width: 90, marginRight: 8 }}
+                >
+                  Save
+                </Button>
+                { unitFormType == "update" ? (
+                  <Button
+                    type="danger"
+                    onClick={() => cancelEditUnit() }
+                    icon={<CloseSquareOutlined />}
+                    size="small"
+                    style={{ width: 90, marginRight: 8 }}
+                  >
+                    Cancel
+                  </Button>
+                ) : "" }
+                
                 <Table dataSource={units} columns={unitColumns}  loading={loading} />
+              </TabPane>
+
+              <TabPane tab="Attendance" key="category-3">
+                {/* <ScoreItemsForm subject={pane.data} /> */}
               </TabPane>
               
             </Tabs>

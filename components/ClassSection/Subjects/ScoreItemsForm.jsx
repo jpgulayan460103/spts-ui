@@ -592,9 +592,7 @@ const ScoreItemsForm = (props) => {
           <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ y: 240 }} />
         </TabPane>
 
-        <TabPane tab="Attendance" key="4">
-          {/* <ScoreItemsForm subject={pane.data} /> */}
-        </TabPane>
+        
       </Tabs>
     </div>
   );
