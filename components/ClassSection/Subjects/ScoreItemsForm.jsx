@@ -543,22 +543,6 @@ const ScoreItemsForm = (props) => {
         });
 
 
-        /* 
-        
-        score_items_0.forEach(element => {
-          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
-          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
-        });
-        score_items_1.forEach(element => {
-          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
-          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
-        });
-        score_items_2.forEach(element => {
-          let item_score = student_scores.filter(score => score.score_item_id == element.id && score.student_id == student.id);
-          student[`item-${element.grading_system_id}-${element.id}`] = _isEmpty(item_score) ? 0 : item_score[0].score;
-        });
-        
-        */
         computeGrade(student.scores, studentIndex, grading_systems);
         return student;
       });

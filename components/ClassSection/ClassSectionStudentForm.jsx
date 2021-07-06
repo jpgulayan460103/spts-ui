@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Table, Modal, Input, Button, Divider, Select, Spin, Typography, Tabs } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined, SaveOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import ScoreItemsForm from './Subjects/ScoreItemsForm'
+import Attendance from './Attendance'
+import Unit from '../Unit/Unit'
 import API from '../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
@@ -43,9 +45,6 @@ const ClassSectionForm = (props) => {
   const [students, setStudents] = useState([]);
   const [studentsStatistics, setStudentsStatistics] = useState({male: 0, female: 0, total: 0});
   const [units, setUnits] = useState([]);
-  const [unitTextbox, setUnitTextbox] = useState("");
-  const [unitFormType, setUnitFormType] = useState("create");
-  const [selectedUnit, setSelectedUnit] = useState([]);
 
   const backToClassSectionForm = () => {
     props.dispatch({
@@ -359,90 +358,7 @@ const ClassSectionForm = (props) => {
     getUnits(selectedSubject);
   }
 
-  const submitUnitForm = () => {
-    if(unitFormType == "create"){
-      addUnit();
-    }else{
-      updateUnit();
-    }
-  }
-
-  const addUnit = (e) => {
-    // let name = e.target.value;
-    let name = unitTextbox;
-    let formData = {
-      class_section_id: props.selectedClassSection.id, 
-      subject_id: props.selectedSubject.id, 
-      unit_name: name, 
-    };
-    API.Unit.add(formData)
-    .then(res => {
-      // console.log(res);
-      getUnits(props.selectedSubject);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .then(res => {})
-    ;
-  }
-  const updateUnit = (e) => {
-    // let name = e.target.value;
-    let name = unitTextbox;
-    let formData = {
-      unit_name: name, 
-    };
-    API.Unit.update(formData, selectedUnit.id)
-    .then(res => {
-      // console.log(res);
-      cancelEditUnit();
-      getUnits(props.selectedSubject);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .then(res => {})
-    ;
-  }
-
-  const confirmDeleteUnit = (unit) => {
-
-    confirm({
-      title: `Do you want to remove ${unit.unit_name}?`,
-      icon: <ExclamationCircleOutlined />,
-      content: 'This will permanently remove all data on this unit.',
-      onOk() {
-        deleteUnit(unit.id);
-      },
-      onCancel() {
-
-      },
-    });
-  }
-
-  const editUnit = (unit) => {
-    setUnitFormType("update");
-    setUnitTextbox(unit.unit_name);
-    setSelectedUnit(unit);
-  }
-
-  const cancelEditUnit = () => {
-    setUnitFormType("create");
-    setUnitTextbox("");
-    setSelectedUnit([]);
-  }
-
-  const deleteUnit = (id) => {
-    API.Unit.delete(id)
-    .then(res => {
-      getUnits(props.selectedSubject);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .then(res => {})
-    ;
-  }
+  
 
   const changeCategoryTabs = (value) => {
     getUnits(props.selectedSubject);
@@ -473,38 +389,6 @@ const ClassSectionForm = (props) => {
   }
 
 
-  const unitColumns = [
-    {
-      title: 'Unit Name',
-      key: 'unit_name',
-      render: (text, record) => (
-        <span>
-          { record.unit_name }
-        </span>
-      )
-    },
-    {
-      title: 'Subject Description',
-      key: 'subject_description',
-      render: (text, record) => (
-        <span>
-          { record.subject.subject_description }
-        </span>
-      )
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      align: "center",
-      render: (text, record) => (
-        <span>
-          <a href="#!" onClick={() => { editUnit(record)  } }>Edit</a> | <a href="#!" onClick={() => { confirmDeleteUnit(record) } }>Delete</a>
-        </span>
-      )
-    },
-  ];
-
-  
 
   return (
     <div>
@@ -559,7 +443,7 @@ const ClassSectionForm = (props) => {
             {/* <ScoreItemsForm subject={pane.data} /> */}
 
             <Tabs defaultActiveKey="category-2" type="card" onChange={changeCategoryTabs}>
-              <TabPane tab="Units" key="category-1">
+              <TabPane tab="Workspace" key="category-1">
                 <Tabs type="card">
                   {
                     units.map(unit => (
@@ -572,41 +456,22 @@ const ClassSectionForm = (props) => {
               </TabPane>
 
 
-              <TabPane tab="List of Units" key="category-2">
-                {/* <ScoreItemsForm subject={pane.data} /> */}
-                <Input
-                  placeholder={`Add Unit Name`}
-                  onChange={(e) => { setUnitTextbox(e.target.value) } }
-                  style={{ width: 188, marginBottom: 8, display: 'block' }}
-                  value={unitTextbox}
-                />
-
-                <Button
-                  type="primary"
-                  onClick={() => submitUnitForm()}
-                  icon={<SaveOutlined />}
-                  size="small"
-                  style={{ width: 90, marginRight: 8 }}
-                >
-                  Save
-                </Button>
-                { unitFormType == "update" ? (
-                  <Button
-                    type="danger"
-                    onClick={() => cancelEditUnit() }
-                    icon={<CloseSquareOutlined />}
-                    size="small"
-                    style={{ width: 90, marginRight: 8 }}
-                  >
-                    Cancel
-                  </Button>
-                ) : "" }
-                
-                <Table dataSource={units} columns={unitColumns}  loading={loading} />
-              </TabPane>
+              
 
               <TabPane tab="Attendance" key="category-3">
-                {/* <ScoreItemsForm subject={pane.data} /> */}
+                <Attendance subject={pane.data} />
+              </TabPane>
+
+
+              <TabPane tab="Configurations" key="category-2">
+                <Tabs defaultActiveKey="config-1" type="card">
+                  <TabPane tab="Units" key="config-1">
+                    <Unit {...props} units={units} getUnits={getUnits} loading={loading} />
+                  </TabPane>
+                  <TabPane tab="Attendance" key="config-2">
+                    <Attendance subject={pane.data} />
+                  </TabPane>
+                </Tabs>
               </TabPane>
               
             </Tabs>
