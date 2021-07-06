@@ -21,7 +21,7 @@ function mapStateToProps(state) {
 
 
 const layout = {
-  labelCol: { span: 8 },
+  labelCol: { span: 16 },
   wrapperCol: { span: 16 },
 };
 
@@ -163,7 +163,6 @@ const Unit = (props) => {
               <Input
                 placeholder={`Enter Unit Name`}
                 onChange={(e) => { setUnitTextbox(e.target.value) } }
-                style={{ width: 188, marginBottom: 8, display: 'block' }}
                 value={unitTextbox}
               />
           </Form.Item>

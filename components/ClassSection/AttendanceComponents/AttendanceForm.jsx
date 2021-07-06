@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
+import { SaveOutlined, CloseSquareOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
@@ -16,11 +17,11 @@ function mapStateToProps(state) {
 }
 const handleClick = () => {}
 const layout = {
-  labelCol: { span: 8 },
+  labelCol: { span: 16 },
   wrapperCol: { span: 16 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { span: 24 },
 };
 const AttendanceForm = (props) => {
   useEffect(() => {
@@ -64,18 +65,22 @@ const AttendanceForm = (props) => {
       ...transformedValue
     })
   }
+
   return (
     <div>
-      <Form {...layout} ref={formRef} layout="horizontal" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} >
-        <Form.Item label="Last Name" name="last_name" hasFeedback {...displayErrors('last_name')}>
-          <Input autoComplete="off" placeholder="Enter Last Name" />
+      <Form {...layout} ref={formRef} layout="vertical" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} >
+        <Form.Item label="Week Name" name="week_name" hasFeedback {...displayErrors('week_name')}>
+          <Input autoComplete="off" placeholder="Enter Week Name" />
         </Form.Item>
-        <Form.Item label="First Name" name="first_name" hasFeedback {...displayErrors('first_name')}>
-          <Input autoComplete="off" placeholder="Enter First Name" />
+        <Form.Item label="Number of Days" name="number_of_days" hasFeedback {...displayErrors('number_of_days')}>
+          <Input autoComplete="off" placeholder="Enter Number of Days" />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit" disabled={submit}>
-            Submit
+          <Button type="primary" size="small" icon={<SaveOutlined />} htmlType="submit" disabled={submit} style={{ width: 90, marginRight: 8 }} >
+            Save
+          </Button>
+          <Button type="danger" size="small" icon={<CloseSquareOutlined />} htmlType="submit" disabled={submit} style={{ width: 90, marginRight: 8 }} >
+            Cancel
           </Button>
         </Form.Item>
       </Form>
