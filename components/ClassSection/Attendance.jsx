@@ -26,10 +26,10 @@ const Attendance = (props) => {
   }
   return (
     <div className="row">
-      <div className="col-md-2">
+      <div className="col-md-3">
         <AttendanceForm />
       </div>
-      <div className="col-md-10">
+      <div className="col-md-9">
         asuduiasdhuiashud
       </div>
     </div>

@@ -156,7 +156,7 @@ const Unit = (props) => {
   ];
   return (
     <div className="row">
-      <div className="col-md-2">
+      <div className="col-md-3">
 
         <Form {...layout} ref={formRef} layout="vertical" name="basic" >
           <Form.Item label="Unit Name" name="unit_name">
@@ -197,7 +197,7 @@ const Unit = (props) => {
         
         
       </div>
-      <div className="col-md-10">
+      <div className="col-md-9">
         <Table dataSource={props.units} columns={unitColumns}  loading={props.loading} />
       </div>
     </div>
