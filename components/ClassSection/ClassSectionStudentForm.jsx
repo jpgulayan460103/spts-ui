@@ -469,7 +469,7 @@ const ClassSectionForm = (props) => {
                     <Unit {...props} units={units} getUnits={getUnits} loading={loading} />
                   </TabPane>
                   <TabPane tab="Attendance" key="config-2">
-                    <Attendance subject={pane.data} />
+                    <Attendance subject={pane.data} attendanceWeeks={{}} />
                   </TabPane>
                 </Tabs>
               </TabPane>
