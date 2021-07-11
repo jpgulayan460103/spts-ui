@@ -48,6 +48,8 @@ const ClassSectionForm = (props) => {
   const [units, setUnits] = useState([]);
   const [attendanceWeeks, setAttendanceWeeks] = useState([]);
   const [attendances, setAttendances] = useState([]);
+  const [attendanceColumn, setAttendanceColumn] = useState([]);
+  const [attendanceStudents, setAttendanceStudents] = useState([]);
 
   const backToClassSectionForm = () => {
     props.dispatch({
@@ -415,14 +417,57 @@ const ClassSectionForm = (props) => {
         setAttendanceWeeks(resultWeeks);
         setAttendances(resultAttendances);
         // console.log(result);
+        setAttendanceTableColums(resultWeeks);
+        setAttendanceTableStudents(resultWeeks, resultAttendances);
       })
       .catch(err => {
         console.log(err);
       })
-      .then(res => {})
+      .then(res => {
+        
+      })
       ;
   }
 
+
+  const setAttendanceTableColums = (attendanceWeeks) => {
+    let cols = [];
+    cols.push({ title: `Student Name`, dataIndex: `full_name_last`, key: `full_name_last` });
+    
+    _forEach(attendanceWeeks, function(attendanceWeek, key) {
+      cols.push({ title: attendanceWeek.week_name, dataIndex: `attendance_${attendanceWeek.id}`, key: `attendance_${attendanceWeek.id}` });
+    });
+    setAttendanceColumn(cols);
+  }
+
+  const setAttendanceTableStudents = (attendanceWeeks, attendances) => {
+    let studs = _cloneDeep(props.students);
+    
+
+    studs.map(stud => {
+      _forEach(attendanceWeeks, function(attendanceWeek, key) {
+        let data = attendances.filter(item => item.student_attendance_week_id == attendanceWeek.id && item.student_id == stud.id);
+        if(_isEmpty(data)){
+          stud[`attendance_${attendanceWeek.id}`] = {
+            class_section_id: props.selectedClassSection.id,
+            subject_id: props.selectedSubject.id,
+            student_attendance_week_id: attendanceWeek.id,
+            student_id: stud.id,
+            present_days: 0,
+            max: attendanceWeek.number_of_days,
+            type: "create",
+          };
+        }else{
+          data = data[0];
+          data.type = "update";
+          data.max = attendanceWeek.number_of_days;
+          stud[`attendance_${attendanceWeek.id}`] = data;
+        }
+      });
+    });
+
+    setAttendanceStudents(studs);
+  }
 
 
   return (
@@ -494,7 +539,7 @@ const ClassSectionForm = (props) => {
               
 
               <TabPane tab="Attendance" key="category-3">
-                <AttendanceStudent attendanceWeeks={attendanceWeeks} attendances={attendances}/>
+                <AttendanceStudent  columns={attendanceColumn} students={attendanceStudents} />
               </TabPane>
 
 
