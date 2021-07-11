@@ -8,6 +8,7 @@ export default {
     return axios.post(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items`,formdata);
   },
   update(formdata,id){
+    let {class_section_id, subject_id} = formdata;
     return axios.put(`/api/class-sections/${class_section_id}/subjects/${subject_id}/score-items/${id}`,formdata);
   },
   delete(formdata, id){

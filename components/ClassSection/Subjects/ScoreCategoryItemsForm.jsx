@@ -27,6 +27,9 @@ const ScoreCategoryItemsForm = (props) => {
   const [totalScoreItems, setTotalScoreItems] = useState(0);
   const [isQuizModalVisible, setIsQuizModalVisible] = useState(false);
   const [quizModalTitle, setQuizModalTitle] = useState("");
+  const [formType, setFormType] = useState("create");
+  const [selectedQuiz, setSelectedQuiz] = useState({});
+
   const setItem = (value) => {
     if(!isNaN(value)){
       setScoreItem(value);
@@ -56,6 +59,20 @@ const ScoreCategoryItemsForm = (props) => {
     ;    
   }
 
+  const updateScoreItem = () => {
+    let formData = selectedQuiz;
+    formData.quiz_name = quizName;
+    API.ScoreItem.update(formData, selectedQuiz.id)
+    .then(res => {
+      message.success(`Successfully updated ${formData.quiz_name}`);
+      getScoreItems();
+      closeQuizForm();
+    })
+    .catch(err => {})
+    .then(res => {})
+    ;  
+  }
+
   const deleteScoreItem = (id) => {
     let formData = {
       class_section_id: props.selectedClassSection.id,
@@ -72,6 +89,16 @@ const ScoreCategoryItemsForm = (props) => {
     .catch(err => {})
     .then(res => {})
     ; 
+  }
+
+  const editScoreItem = (quiz) => {
+    setSelectedQuiz(quiz);
+    setIsQuizModalVisible(true);
+    setQuizModalTitle(props.gradingSystem.category);
+    setScoreItem(quiz.item)
+    console.log(quiz.item);
+    setQuizName(quiz.quiz_name)
+    setFormType("update");
   }
   
   const getScoreItems = () => {
@@ -101,11 +128,17 @@ const ScoreCategoryItemsForm = (props) => {
     setIsQuizModalVisible(true);
   };
   const submitQuizForm = () => {
-    addScoreItem();
+    if(formType == "create"){
+      addScoreItem();
+    }else{
+      // console.log(selectedQuiz);
+      updateScoreItem();
+    }
     // setIsQuizModalVisible(false);
   };
   const closeQuizForm = () => {
     setIsQuizModalVisible(false);
+    setFormType("create");
   };
 
   const layout = {
@@ -144,7 +177,7 @@ const ScoreCategoryItemsForm = (props) => {
         footer={<div>Total: {totalScoreItems} </div>}
         bordered
         dataSource={scoreItems}
-        renderItem={item => <List.Item actions={[<a href="#!" onClick={() => deleteScoreItem(item.id) } key="list-loadmore-edit">edit</a>, <a href="#!" onClick={() => deleteScoreItem(item.id) } key="list-loadmore-delete">delete</a>]} >{`${item.quiz_name}: ${item.item}`}</List.Item>}
+        renderItem={item => <List.Item actions={[<a href="#!" onClick={() => editScoreItem(item) } key="list-loadmore-edit">edit</a>, <a href="#!" onClick={() => deleteScoreItem(item.id) } key="list-loadmore-delete">delete</a>]} >{`${item.quiz_name}: ${item.item}`}</List.Item>}
       />
 
 
@@ -186,19 +219,21 @@ const ScoreCategoryItemsForm = (props) => {
           >
             <Input placeholder="Type quiz name" defaultValue={quizName} onChange={(e) => setQuizName(e.target.value)} />
           </Form.Item>
-
-          <Form.Item
-            label="Quiz Items"
-            name="item"
-            rules={[
-              {
-                required: true,
-                message: 'Please input quiz items.',
-              },
-            ]}
-          >
-            <InputNumber style={{width: "100%"}} min={1} max={999} defaultValue={scoreItem} placeholder="Type quiz items" onChange={setItem} />
-          </Form.Item>
+          { formType == "create" ? (
+            <Form.Item
+              label="Quiz Items"
+              name="item"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input quiz items.',
+                },
+              ]}
+            >
+              <InputNumber style={{width: "100%"}} min={1} max={999} defaultValue={scoreItem} placeholder="Type quiz items" onChange={setItem} />
+            </Form.Item>
+          ) : ""}
+          
 
 
         </Form>
