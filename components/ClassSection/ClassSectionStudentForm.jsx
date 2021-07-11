@@ -4,6 +4,7 @@ import { Table, Modal, Input, Button, Divider, Select, Spin, Typography, Tabs } 
 import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined, SaveOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import ScoreItemsForm from './Subjects/ScoreItemsForm'
 import Attendance from './Attendance'
+import AttendanceStudent from './AttendanceComponents/AttendanceStudent'
 import Unit from '../Unit/Unit'
 import API from '../../api'
 import _forEach from 'lodash/forEach'
@@ -45,6 +46,8 @@ const ClassSectionForm = (props) => {
   const [students, setStudents] = useState([]);
   const [studentsStatistics, setStudentsStatistics] = useState({male: 0, female: 0, total: 0});
   const [units, setUnits] = useState([]);
+  const [attendanceWeeks, setAttendanceWeeks] = useState([]);
+  const [attendances, setAttendances] = useState([]);
 
   const backToClassSectionForm = () => {
     props.dispatch({
@@ -300,6 +303,7 @@ const ClassSectionForm = (props) => {
         data: selectedSubject[0],
       });
       getUnits(selectedSubject[0]);
+      getAttendanceWeeks(selectedSubject[0]);
     }
     setActivePane(value);
   }
@@ -356,14 +360,16 @@ const ClassSectionForm = (props) => {
       data: selectedSubject,
     });
     getUnits(selectedSubject);
+    getAttendanceWeeks(selectedSubject);
   }
 
   
 
   const changeCategoryTabs = (value) => {
-    getUnits(props.selectedSubject);
-    // if(value == "category-1"){
-    // }
+    // getUnits(props.selectedSubject);
+    if(value == "category-3"){
+      // getAttendanceWeeks(props.selectedSubject);
+    }
   }
 
   const getUnits = (selectedSubject) => {
@@ -379,6 +385,35 @@ const ClassSectionForm = (props) => {
           return item;
         });
         setUnits(result);
+        // console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+      .then(res => {})
+      ;
+  }
+
+  const getAttendanceWeeks = (selectedSubject) => {
+    let formData = {
+      class_section_id: props.selectedClassSection.id,
+      subject_id: selectedSubject.id
+    };
+    API.Attendance.allWeek(formData)
+      .then(res => {
+        let resultWeeks = res.data.weeks;
+        resultWeeks.map((item, index) => {
+          item.key = `week_${index}`;
+          return item;
+        });
+
+        let resultAttendances = res.data.attendances;
+        resultAttendances.map((item, index) => {
+          item.key = `week_${index}`;
+          return item;
+        });
+        setAttendanceWeeks(resultWeeks);
+        setAttendances(resultAttendances);
         // console.log(result);
       })
       .catch(err => {
@@ -459,7 +494,7 @@ const ClassSectionForm = (props) => {
               
 
               <TabPane tab="Attendance" key="category-3">
-                <Attendance subject={pane.data} />
+                <AttendanceStudent attendanceWeeks={attendanceWeeks} attendances={attendances}/>
               </TabPane>
 
 
@@ -469,7 +504,7 @@ const ClassSectionForm = (props) => {
                     <Unit {...props} units={units} getUnits={getUnits} loading={loading} />
                   </TabPane>
                   <TabPane tab="Attendance" key="config-2">
-                    <Attendance subject={pane.data} attendanceWeeks={{}} />
+                    <Attendance subject={pane.data} attendanceWeeks={attendanceWeeks} getAttendanceWeeks={getAttendanceWeeks} />
                   </TabPane>
                 </Tabs>
               </TabPane>

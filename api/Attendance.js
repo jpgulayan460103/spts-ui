@@ -2,24 +2,28 @@ import axios from './axios-settings'
 
 export default {
   
-  add(formdata){
-    return axios.post(`/api/attendance`,formdata);
+  addWeek(formdata){
+    return axios.post(`/api/student-attendance-week`,formdata);
   },
-  update(formdata,id){
-    return axios.put(`/api/attendance/${id}`,formdata);
+  updateWeek(formdata,id){
+    return axios.put(`/api/student-attendance-week/${id}`,formdata);
   },
-  delete(id){
-    return axios.delete(`/api/attendance/${id}`);
+  deleteWeek(id){
+    return axios.delete(`/api/student-attendance-week/${id}`);
   },
-  all(formData){
-    return axios.get(`/api/attendance`,{
+  allWeek(formData){
+    return axios.get(`/api/student-attendance-week`,{
       params: formData
     });
   },
-  get(id){
-    return axios.get(`/api/attendance/${id}`);
+  getWeek(id){
+    return axios.get(`/api/student-attendance-week/${id}`);
   },
-  categories(id){
-    return axios.get(`/api/subject-categories`);
-  }
+
+  updateAttendance(formdata){
+    return axios.put(`/api/student-attendance/${formdata.id}`,formdata);
+  },
+  addAttendance(formdata){
+    return axios.post(`/api/student-attendance`,formdata);
+  },
 }

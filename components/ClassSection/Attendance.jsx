@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, InputNumber, Button, Table, Select, DatePicker, Typography } from 'antd';
+import { Form, Input, InputNumber, Button, Table, Select, DatePicker, Modal } from 'antd';
 import { SaveOutlined, CloseSquareOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from './../../api'
 import AttendanceForm from './AttendanceComponents/AttendanceForm'
 import _forEach from 'lodash/forEach'
+
+const { confirm } = Modal;
 
 function mapStateToProps(state) {
   return {
@@ -53,18 +55,47 @@ const Attendance = (props) => {
     })
   }
   const formSubmit = (e) => {
-    console.log(formData);
-    // API.Attendance.add();
+
+    if(weekFormType == "create"){
+      addWeek();
+    }else{
+      updateWeek();
+    }
   }
 
-  const confirmDeleteUnit = (unit) => {
-    console.log(unit);
+  const addWeek = () => {
+    API.Attendance.addWeek(formData)
+    .then(res => {
+      props.getAttendanceWeeks(props.selectedSubject);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {})
+    ;
+  }
+  const updateWeek = (e) => {
+    API.Attendance.updateWeek(formData, selectedWeek.id)
+    .then(res => {
+      cancelEditWeek();
+      props.getAttendanceWeeks(props.selectedSubject);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {})
+    ;
+  }
+
+
+  const confirmDeleteWeek = (week) => {
+    console.log(week);
     confirm({
-      title: `Do you want to remove ${unit.unit_name}?`,
+      title: `Do you want to remove ${week.unit_name}?`,
       icon: <ExclamationCircleOutlined />,
-      content: 'This will permanently remove all data on this unit.',
+      content: 'This will permanently remove all data on this week.',
       onOk() {
-        deleteUnit(unit.id);
+        deleteWeek(week.id);
       },
       onCancel() {
 
@@ -76,6 +107,10 @@ const Attendance = (props) => {
     setWeekFormType("update");
     setSelectedWeek(unit);
     formRef.current.setFieldsValue(unit);
+    setFormData({
+      ...formData,
+      ...unit
+    })
   }
 
   const cancelEditWeek = () => {
@@ -85,9 +120,9 @@ const Attendance = (props) => {
   }
 
   const deleteWeek = (id) => {
-    API.Attendance.delete(id)
+    API.Attendance.deleteWeek(id)
     .then(res => {
-      props.getWeeks(props.selectedSubject);
+      props.getAttendanceWeeks(props.selectedSubject);
     })
     .catch(err => {
       console.log(err);
@@ -137,16 +172,20 @@ const Attendance = (props) => {
           <Form.Item label="Week Name" name="week_name" rules={[{ required: true, message: 'Required' }]}>
             <Input autoComplete="off" placeholder="Enter Week Name" />
           </Form.Item>
+          { weekFormType == "create" ? (
           <Form.Item label="Number of Days" name="number_of_days" rules={[{ required: true, message: 'Required' }]}>
             <InputNumber min={1} max={7} style={{width: "100%"}}  placeholder="Enter Number of Days" />
           </Form.Item>
+          ) : "" }
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit" size="small" icon={<SaveOutlined />} htmlType="submit" disabled={submit} style={{ width: 90, marginRight: 8 }} >
               Save
             </Button>
+            { weekFormType == "update" ? (
             <Button type="danger" size="small" icon={<CloseSquareOutlined />} htmlType="submit" disabled={submit} style={{ width: 90, marginRight: 8 }} >
               Cancel
             </Button>
+            ) : "" }
           </Form.Item>
         </Form>
       </div>
