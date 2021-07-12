@@ -42,6 +42,9 @@ const ClassSectionTable = (props) => {
   const setSchoolYearFilter = (value) => {
     setSearchData({...searchData,school_year:value});
   }
+  const setSemesterFilter = (value) => {
+    setSearchData({...searchData,semester_id:value});
+  }
   const populateTrackSelection = (section) => {
     let items = [];
     _forEach(section, function(value, key) {
@@ -135,6 +138,15 @@ const ClassSectionTable = (props) => {
       key: 'school_year',
     },
     {
+      title: 'Semester',
+      key: 'semester',
+      render: (text, record) => (
+        <span>
+          { record.semester.name }
+        </span>
+      ),
+    },
+    {
       title: 'Adviser',
       key: 'section_adviser',
       render: (text, record) => (
@@ -212,6 +224,16 @@ const ClassSectionTable = (props) => {
         <Option value="2">ACADEMIC TRACK – General Academic Strand (GAS)</Option>
         <Option value="3">TECHNICAL VOCATIONAL TRACK – Home Economics Strand</Option>
         <Option value="4">TECHNICAL VOCATIONAL TRACK – Information and Communications Technology</Option>
+      </Select>
+
+      <Select
+        allowClear
+        placeholder="Select a Semester"
+        onChange={setSemesterFilter}
+        style={{ width: 200 }}
+      >
+        <Option value="1">First Semester</Option>
+        <Option value="2">Second Semester</Option>
       </Select>
       <Button type="primary" icon={<SearchOutlined />} onClick={() => {getClassSections()}}>
         Search

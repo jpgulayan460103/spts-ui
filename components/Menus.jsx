@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Badge  } from 'antd';
-import { DashboardOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, TeamOutlined, ApartmentOutlined, SolutionOutlined, ReadOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
 import queryString from "query-string";
@@ -46,7 +46,7 @@ const Menus = (props) => {
             ) : "" }
             { props.role.name == "admin" ? (
               <Menu.Item key="/students">
-                <UserOutlined />
+                <TeamOutlined />
                 <Link href="/students">
                   <a>Students</a>
                 </Link>
@@ -54,7 +54,7 @@ const Menus = (props) => {
             ) : "" }
             { props.role.name == "admin" ? (
               <Menu.Item key="/teachers">
-                <UserOutlined />
+                <SolutionOutlined />
                 <Link href="/teachers">
                   <a>Teacher</a>
                 </Link>
@@ -62,7 +62,7 @@ const Menus = (props) => {
             ) : "" }
             { props.role.name == "admin" || props.role.name == "teacher" ? (
               <Menu.Item key="/sections">
-                <UserOutlined />
+                <ApartmentOutlined />
                 <Link href="/sections">
                   <a>Sections</a>
                 </Link>
@@ -70,7 +70,7 @@ const Menus = (props) => {
             ) : "" }
             { props.role.name == "admin" ? (
               <Menu.Item key="/subjects">
-                <UserOutlined />
+                <ReadOutlined />
                 <Link href="/subjects">
                   <a>Subjects</a>
                 </Link>

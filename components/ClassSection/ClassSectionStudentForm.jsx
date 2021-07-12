@@ -479,7 +479,7 @@ const ClassSectionForm = (props) => {
       </p>
       <p>Section Name: <b>{props.selectedClassSection.section_name}</b></p>
       <p>Track: <b>{props.selectedClassSection.track.name}</b></p>
-      <p>Adviser: <b>{props.selectedClassSection.section_adviser}</b></p>
+      <p>Adviser: <b>{props.selectedClassSection.teacher.full_name_last}</b></p>
       <p>
         Total Students: <b>{studentsStatistics.total}</b>&nbsp;
         (
@@ -487,6 +487,7 @@ const ClassSectionForm = (props) => {
           <Pluralize singular={'Female'} count={studentsStatistics.female} zero={'0 Female'} />
         )
         </p>
+      <p>Semester: <b>{props.selectedClassSection.semester.name}</b></p>
       <p>Grade Level: <b>{props.selectedClassSection.grade_level}</b></p>
       <p>School Year: <b>{props.selectedClassSection.school_year}</b></p>
       <Tabs onChange={changeTabs} type="editable-card" activeKey={activePane} onEdit={onEdit}>
