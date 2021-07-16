@@ -25,10 +25,8 @@ const Layouts = ({children}) => {
     }else{
       let role = user.user.roles[0].name;
       setUserRole(role);
-      if(role == "teacher"){
-        Router.push('/sections')
-        if(route == "/"){
-        }
+      if(role == "teacher" && route != "/"){
+        Router.push('/401')
       }
     }
   }, []);
@@ -37,7 +35,7 @@ const Layouts = ({children}) => {
     containerStyle: { margin: '0 16px'},
     containerChildDivClassName: { className:"site-layout-background" } 
   };
-  if(route == "/"){
+  if(route == "/" && userRole == "admin"){
     containerLayout.containerStyle = { margin: '0 16px', background: "rgba((0, 0, 0, 0.65)"};
     containerLayout.containerChildDivClassName = { className:"site-layout-background-index" };
   }
