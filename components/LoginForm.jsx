@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Modal } from 'antd';
 import API from '../api'
 import Router from 'next/router'
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
@@ -25,16 +25,18 @@ const tailLayout = {
   },
 };
 
+
 class LoginForm extends Component {
   constructor(props){
     super(props);
     this.state = {
-      
+      formError: {}
     }
     this.handleTest = this.handleTest.bind(this);
     this.onFinish = this.onFinish.bind(this);
     this.onFinishFailed = this.onFinishFailed.bind(this);
   }
+  
   handleTest = () => {
     API.User.getUsers()
       .then(res => {
@@ -62,7 +64,12 @@ class LoginForm extends Component {
           type: "USER_LOGIN_FAILED",
           data: err
         });
-        Router.push('/login')
+        this.setState({formError: err.response.data});
+        Modal.error({
+          title: 'Login failed.',
+          content: 'Invalid username or password.',
+        });
+        // Router.push('/login')
       }
     })
     .then(res => {})

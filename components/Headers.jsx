@@ -16,7 +16,20 @@ import {
   NavbarText
 } from 'reactstrap';
 import { CaretDownOutlined } from '@ant-design/icons';
+import { Popover, Button } from 'antd';
 import Link from 'next/link'
+
+const RightMenu = (props) => {
+  return (
+    <div>
+        {props.user ?<div className="text-center"> Welcome, <b>{props.user.username}</b></div>: ""}
+      <ul className="list-group">
+        <li className="list-group-item menu-select">Change Password</li>
+        <li className="list-group-item menu-select" onClick={() => props.logout()}>Logout</li>
+      </ul>
+    </div>
+  );
+}
 
 class Headers extends Component {
   constructor(props){
@@ -24,11 +37,13 @@ class Headers extends Component {
     this.state = {
       accessToken: "",
       isLogged: false,
+      visible: false,
     };
     this.toggle = this.toggle.bind(this);
     this.loggedState = this.loggedState.bind(this);
     this.logout = this.logout.bind(this);
-    this.redirect = this.redirect.bind(this);
+    this.handleVisibleChange = this.handleVisibleChange.bind(this);
+    this.hide = this.hide.bind(this);
   }
   static getDerivedStateFromProps(props, state) {
     return {
@@ -42,20 +57,15 @@ class Headers extends Component {
   loggedState = () => {
     if(this.state.isLogged){
       return (
-        <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav>
-            {this.props.user ? this.props.user.username : ""} <CaretDownOutlined />
-          </DropdownToggle>
-          <DropdownMenu right>
-            <DropdownItem>
-              Change Password
-            </DropdownItem>
-            <DropdownItem divider />
-            <DropdownItem>
-              <NavLink href="#" onClick={() => this.logout() }>Logout</NavLink>
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
+        <Popover
+          content={<RightMenu logout={this.logout} user={this.props.user}/>}
+          trigger="click"
+          placement="bottomRight"
+          visible={this.state.visible}
+          onVisibleChange={this.handleVisibleChange}
+        >
+        <span style={{cursor: "pointer"}}><CaretDownOutlined /></span>
+      </Popover>
       )
     }else{
       return (
@@ -72,6 +82,15 @@ class Headers extends Component {
     });
     Router.push('/login')
   }
+  hide = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleVisibleChange = visible => {
+    this.setState({ visible });
+  };
   redirect = (redirectTo) => {
     Router.push(`/${redirectTo}`)
   }
@@ -81,24 +100,12 @@ class Headers extends Component {
       <Navbar color="light" light expand="md">
         <NavbarBrand href="#!"  onClick={() => this.redirect('') }>
         <img src="/images/logo.png" className="h-16 w-16 mr-2 full mx-auto float-left" alt=""/> 
-        <span className="pl-1">STUDENT PERFORMANCE</span><br />
-        <span className="pl-1">TRACKING SYSTEM</span>
+        <span className="pl-2 text-base font-semibold m-0">STUDENT PERFORMANCE</span><br />
+        <span className="pl-2 text-base font-semibold m-0">TRACKING SYSTEM</span>
         </NavbarBrand>
-        <NavbarToggler onClick={this.toggle} />
-        <Collapse isOpen={this.state.isOpen} navbar>
-          <Nav className="mr-auto" navbar>
-            <NavItem>
-              <NavLink href="#!" onClick={() => this.redirect('about') }>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap"></NavLink>
-            </NavItem>
+        <Nav navbar className="ml-auto">
+          {this.loggedState()}
           </Nav>
-          <Nav navbar>
-            {this.loggedState()}
-          </Nav>
-        </Collapse>
       </Navbar>
     </React.Fragment>
     );

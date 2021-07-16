@@ -23,7 +23,7 @@ export class index extends Component {
         </Head>
         <div className="container-fluid">
             <div className="row justify-content-center">
-              <div className="col-md-3">
+              <div>
                 <div className="mt-20 p-10" style={{border: "1px solid black"}}>
                   <LoginForm />
                 </div>

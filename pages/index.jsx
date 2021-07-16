@@ -6,6 +6,7 @@ import Layouts from './../layouts/layouts'
 import ls from 'local-storage'
 import ClassSectionParent from '../components/ClassSection/ClassSection'
 import Portfolio from './../components/Student/Portfolio'
+import Router from 'next/router'
 
 const index = (props) => {
   const [userRole, setUserRole] = useState("");

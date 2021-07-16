@@ -5,7 +5,7 @@ const initialState = () => {
     semesters: [],
     teachers: [],
     transmutedGrades: [],
-    menuCollapsed: false,
+    menuCollapsed: true,
   }
 }
 

@@ -334,7 +334,6 @@ const ScoreItemsForm = (props) => {
     {
       title: 'Full Name',
       key: 'student',
-      width: 300,
       fixed: 'left',
       render: (text, record, index) => (
         <span>
@@ -573,7 +572,9 @@ const ScoreItemsForm = (props) => {
           <QuizTable getScores={getScores} dataSource={studentDataSource} columns={quizCols} gradingSystem={gradingSystem} unitId={props.unitId} />
         </TabPane>
         <TabPane tab="Unit Summary" key="3">
-          <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} scroll={{ y: 240 }} />
+          <div className="table-responsive">
+            <Table pagination={false} bordered dataSource={studentDataSource} columns={studentGradeColumns} />
+          </div>
         </TabPane>
 
         
