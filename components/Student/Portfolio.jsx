@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import API from '../../api';
 import { Typography, Table } from 'antd';
+import StudentSection from './StudentSection'
+import _isEmpty from 'lodash/isEmpty'
 
 const { Title } = Typography;
 
@@ -20,6 +22,7 @@ const Portfolio = (props) => {
 
   //states
   const [userData, setUserData] = useState({});
+  const [selectedSubject, setSelectedSubject] = useState({});
 
 
   //data
@@ -49,7 +52,7 @@ const Portfolio = (props) => {
       dataIndex: 'view_class',
       render: (text, record) => (
         <span>
-          <span>{record.semester.name == "First Semester" ? "1st" : "2nd"}</span>
+          <a href="#!" onClick={() => { clickSection(record) }}>View {record.semester.name == "First Semester" ? "1st" : "2nd"} Semester</a>
         </span>
       ),
     },
@@ -66,17 +69,35 @@ const Portfolio = (props) => {
     .catch(res => {})
     .then(res => {})
   }
+
+  const clickSection = (data) => {
+    setSelectedSubject(data);
+  }
   return (
     <div>
       <Title level={4}>PERSONAL DETAILS</Title>
-      <p><b>ID Number:</b> {userData.student_id_number}</p>
-      <p><b>Name:</b> {userData.full_name_last}</p>
-      <p><b>Gender:</b> {userData.gender}</p>
+      <span><b>ID Number:</b> {userData.student_id_number}</span><br />
+      <span><b>Name:</b> {userData.full_name_last}</span><br />
+      <span><b>Gender:</b> {userData.gender}</span><br />
+      <br />
+      { !_isEmpty(selectedSubject) ? (
+        <React.Fragment>
+          <Title level={4}>ENROLLED CLASS</Title>
+          <span><b>Grade/Section:</b> <span>{selectedSubject.grade_level}</span> - <span>{selectedSubject.section_name}</span></span><br />
+          <span><b>School Year:</b> <span>{selectedSubject.quarter?.name == "First Semester" ? "Q1" : "Q2"} {selectedSubject.school_year}</span></span><br />
+          <span><b>Semester:</b> <span>{selectedSubject.semester?.name == "First Semester" ? "1st" : "2nd"} Semester</span></span><br />
+        </React.Fragment>
+      ) : <Title level={4}>ENROLLED CLASSES</Title> }
 
-      <Title level={4}>Enrolled Classes</Title>
-      <div className="table-responsive">
-      <Table columns={columns} dataSource={userData?.class_sections?.data} />
-      </div>
+      
+
+      { _isEmpty(selectedSubject) ? (
+        <React.Fragment>
+          <div className="table-responsive">
+          <Table columns={columns} dataSource={userData?.class_sections?.data} />
+          </div>
+        </React.Fragment>
+      ) : <StudentSection /> }
     </div>
   );
 }

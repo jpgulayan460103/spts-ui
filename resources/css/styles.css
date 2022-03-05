@@ -34,10 +34,10 @@
 .ant-layout-sider-children{
   color: rgba(0, 0, 0, 0.6);
 }
-.anticon{
+/* .anticon{
   position: relative;
   top: -0.25em;
-}
+} */
 
 #quiztable tr td{
   text-align: center;

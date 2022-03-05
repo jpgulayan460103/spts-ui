@@ -1,19 +1,33 @@
+import React, {useEffect,useState} from 'react'
+import { connect } from 'react-redux';
 import Head from 'next/head'
 import Headers from '../components/Headers'
 import Menus from '../components/Menus'
 import { Provider } from 'react-redux'
 import store from '../store'
-import {useEffect,useState} from 'react'
 import ls from 'local-storage'
 import Router from 'next/router'
-import { Layout, BackTop  } from "antd";
+import { Layout, BackTop, Menu  } from "antd";
+import { DashboardOutlined, UserOutlined, TeamOutlined, ApartmentOutlined, SolutionOutlined, ReadOutlined } from '@ant-design/icons';
 import queryString from "query-string";
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const { Header, Content, Footer, Sider } = Layout;
 
 
-const Layouts = ({children}) => {
+function mapStateToProps(state) {
+  return {
+    sentCount: state.smsBlast.sentCount,
+    recipients: state.smsBlast.recipients,
+    sendStatus: state.smsBlast.sendStatus,
+    menuCollapsed: state.appDefault.menuCollapsed,
+    role: state.user.role,
+  };
+}
+
+
+const Layouts = (props) => {
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
   var {route} = router;
@@ -40,16 +54,61 @@ const Layouts = ({children}) => {
     containerLayout.containerChildDivClassName = { className:"site-layout-background-index" };
   }
   return (
-    <Provider store={store}>
-      <Headers />
+    <div>
+      {/* <Headers /> */}
       <Layout style={{ minHeight: '100vh' }}>
-        { userRole == "admin" ? <Menus /> : <></> }
+        {/* { userRole == "admin" ? <Menus /> : <></> } */}
         <Layout className="site-layout">
-          {/* <Header /> */}
+        <Header className="header">
+          <div className="logo" />
+          <Menu theme="dark" defaultSelectedKeys={[route]} mode="horizontal">
+            { props.role?.name == "admin" ? (
+              <Menu.Item key="/">
+                <DashboardOutlined />
+                <Link href="/">
+                  <a className='ml-2'>Dashboard</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/students">
+                <TeamOutlined />
+                <Link href="/students">
+                  <a className='ml-2'>Students</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/teachers">
+                <SolutionOutlined />
+                <Link href="/teachers">
+                  <a className='ml-2'>Teacher</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" || props.role.name == "teacher" ? (
+              <Menu.Item key="/sections">
+                <ApartmentOutlined />
+                <Link href="/sections">
+                  <a className='ml-2'>Sections</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+            { props.role.name == "admin" ? (
+              <Menu.Item key="/subjects">
+                <ReadOutlined />
+                <Link href="/subjects">
+                  <a className='ml-2'>Subjects</a>
+                </Link>
+              </Menu.Item>
+            ) : "" }
+
+          </Menu>
+        </Header>
           <br />
           <Content style={{...containerLayout.containerStyle}} >
             <div {...containerLayout.containerChildDivClassName} style={{ padding: 24, minHeight: '100%' }}>
-              {children}
+              {props.children}
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>
@@ -62,7 +121,10 @@ const Layouts = ({children}) => {
         </Layout>
         <BackTop />
       </Layout>
-    </Provider>
+    </div>
   );
 }
-export default Layouts;
+export default connect(
+  mapStateToProps,
+)(Layouts);
+

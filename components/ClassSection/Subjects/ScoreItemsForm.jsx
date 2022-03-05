@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Input, Tabs, Table, InputNumber  } from 'antd';
+import { Input, Tabs, Table, InputNumber, Select  } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ScoreCategoryItemsForm from './ScoreCategoryItemsForm';
 import API from '../../../api'
@@ -12,6 +12,7 @@ import QuizTable from "./QuizTable";
 import { InputGroup } from 'reactstrap';
 const { Search } = Input;
 const { TabPane } = Tabs;
+const { Option } = Select;
 
 function mapStateToProps(state) {
   return {
@@ -420,6 +421,20 @@ const ScoreItemsForm = (props) => {
       render: (text, record, index) => (
         <span>
           { remarksGrade(record.transmuted_grade) }
+        </span>
+      ),
+    },
+    {
+      title: `Actions to be taken`,
+      key: 'action-to-be-taken',
+      render: (text, record, index) => (
+        <span>
+          <Select style={{width: "100%"}} placeholder="Select Action">
+            <Option value="One-on-One Consultation">One-on-One Consultation</Option>
+            <Option value="Remedial Classes">Remedial Classes</Option>
+            <Option value="Parent Conference">Parent Conference</Option>
+            <Option value="Reinforcement">Reinforcement</Option>
+          </Select>
         </span>
       ),
     },

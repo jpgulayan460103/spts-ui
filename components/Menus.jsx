@@ -33,51 +33,9 @@ const Menus = (props) => {
   
   return (
     <React.Fragment>
-        <Sider collapsible collapsed={props.menuCollapsed} onCollapse={onCollapse}>
+        <Sider onCollapse={onCollapse}>
           <div className="logo" />
-          <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline">
-            { props.role.name == "admin" ? (
-              <Menu.Item key="/">
-                <DashboardOutlined />
-                <Link href="/">
-                  <a>Dashboard</a>
-                </Link>
-              </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
-              <Menu.Item key="/students">
-                <TeamOutlined />
-                <Link href="/students">
-                  <a>Students</a>
-                </Link>
-              </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
-              <Menu.Item key="/teachers">
-                <SolutionOutlined />
-                <Link href="/teachers">
-                  <a>Teacher</a>
-                </Link>
-              </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" || props.role.name == "teacher" ? (
-              <Menu.Item key="/sections">
-                <ApartmentOutlined />
-                <Link href="/sections">
-                  <a>Sections</a>
-                </Link>
-              </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
-              <Menu.Item key="/subjects">
-                <ReadOutlined />
-                <Link href="/subjects">
-                  <a>Subjects</a>
-                </Link>
-              </Menu.Item>
-            ) : "" }
 
-          </Menu>
         </Sider>
       </React.Fragment>
   );
