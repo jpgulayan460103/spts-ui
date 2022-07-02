@@ -17,6 +17,7 @@ import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { values } from 'lodash';
+import UnitSummary from './UnitSummary';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -77,14 +78,6 @@ const ClassSectionForm = (props) => {
       setLoading(false);
       let classSection = res.data.class_sections.students.data;
       let subjects = res.data.class_sections.subjects.data;
-      classSection.map((item, index) => {
-        item.key = `classsection_${index}`;
-        return item;
-      });
-      subjects.map((item, index) => {
-        item.key = `students_${index}`;
-        return item;
-      });
       popuplateStudentTable(classSection);
       props.dispatch({
         type: "SELECT_CLASS_SECTION_SUBJECTS",
@@ -369,7 +362,8 @@ const ClassSectionForm = (props) => {
 
   const changeCategoryTabs = (value) => {
     // getUnits(props.selectedSubject);
-    if(value == "category-3"){
+    if(value == "category-4"){
+      getUnits(props.selectedSubject);
       // getAttendanceWeeks(props.selectedSubject);
     }
   }
@@ -381,11 +375,7 @@ const ClassSectionForm = (props) => {
     };
     API.Unit.all(formData)
       .then(res => {
-        let result = res.data.units;
-        result.map((item, index) => {
-          item.key = `unit_${index}`;
-          return item;
-        });
+        let result = res.data.units.data;
         setUnits(result);
         // console.log(result);
       })
@@ -404,16 +394,8 @@ const ClassSectionForm = (props) => {
     API.Attendance.allWeek(formData)
       .then(res => {
         let resultWeeks = res.data.weeks;
-        resultWeeks.map((item, index) => {
-          item.key = `week_${index}`;
-          return item;
-        });
 
         let resultAttendances = res.data.attendances;
-        resultAttendances.map((item, index) => {
-          item.key = `week_${index}`;
-          return item;
-        });
         setAttendanceWeeks(resultWeeks);
         setAttendances(resultAttendances);
         // console.log(result);
@@ -524,6 +506,19 @@ const ClassSectionForm = (props) => {
             {/* <ScoreItemsForm subject={pane.data} /> */}
 
             <Tabs defaultActiveKey="category-2" type="card" onChange={changeCategoryTabs}>
+
+            <TabPane tab="Configurations" key="category-2">
+                <Tabs defaultActiveKey="config-1" type="card">
+                  <TabPane tab="Units" key="config-1">
+                    <Unit {...props} units={units} getUnits={getUnits} loading={loading} />
+                  </TabPane>
+                  <TabPane tab="Attendance" key="config-2">
+                    <Attendance subject={pane.data} attendanceWeeks={attendanceWeeks} getAttendanceWeeks={getAttendanceWeeks} />
+                  </TabPane>
+                </Tabs>
+              </TabPane>
+
+
               <TabPane tab="Workspace" key="category-1">
                 <Tabs type="card">
                   {
@@ -535,8 +530,6 @@ const ClassSectionForm = (props) => {
                   }
                 </Tabs>
               </TabPane>
-
-
               
 
               <TabPane tab="Attendance" key="category-3">
@@ -544,16 +537,12 @@ const ClassSectionForm = (props) => {
               </TabPane>
 
 
-              <TabPane tab="Configurations" key="category-2">
-                <Tabs defaultActiveKey="config-1" type="card">
-                  <TabPane tab="Units" key="config-1">
-                    <Unit {...props} units={units} getUnits={getUnits} loading={loading} />
-                  </TabPane>
-                  <TabPane tab="Attendance" key="config-2">
-                    <Attendance subject={pane.data} attendanceWeeks={attendanceWeeks} getAttendanceWeeks={getAttendanceWeeks} />
-                  </TabPane>
-                </Tabs>
+              <TabPane tab="Unit Summary" key="category-4">
+                <UnitSummary units={units}></UnitSummary>
               </TabPane>
+
+
+              
               
             </Tabs>
           </TabPane>

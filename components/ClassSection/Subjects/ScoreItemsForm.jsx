@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Input, Tabs, Table, InputNumber, Select  } from 'antd';
+import { Input, Tabs, Table, InputNumber, Select, message  } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ScoreCategoryItemsForm from './ScoreCategoryItemsForm';
 import API from '../../../api'
@@ -78,7 +78,7 @@ const ScoreItemsForm = (props) => {
   const addValueScore = _debounce((e, record, item, studentIndex) => {
     // let score = e.target.value;
     let score = e;
-    console.log(score);
+    // console.log(score);
     let formData = {
       score: score,
       student_id: record.id,
@@ -181,6 +181,7 @@ const ScoreItemsForm = (props) => {
       }
       return student;
     });
+    // console.table(propsStudents);
     setStudents(propsStudents);
   }
 
@@ -282,6 +283,23 @@ const ScoreItemsForm = (props) => {
     }else{
       return "Failed";
     }
+  }
+
+  const saveUnitAction = (e, record) => {
+    let formData = {
+      unit_id: props.unitId,
+      student_id: record.id,
+      action: e,
+    }
+    
+    API.Unit.saveAction(formData)
+    .then(res => {
+      message.success('Actions have been saved.');
+      getScores();
+    })
+    .catch(err => {})
+    .then(res => {})
+    ;
   }
 
 
@@ -429,7 +447,7 @@ const ScoreItemsForm = (props) => {
       key: 'action-to-be-taken',
       render: (text, record, index) => (
         <span>
-          <Select style={{width: "100%"}} placeholder="Select Action">
+          <Select style={{width: "100%"}} placeholder="Select Action" value={record.action_taken} onChange={(e) => saveUnitAction(e, record) }>
             <Option value="One-on-One Consultation">One-on-One Consultation</Option>
             <Option value="Remedial Classes">Remedial Classes</Option>
             <Option value="Parent Conference">Parent Conference</Option>
@@ -457,7 +475,8 @@ const ScoreItemsForm = (props) => {
     .then(res => {
       let score_items = res.data.score_items;
       let student_scores = res.data.scores;
-      let grading_systems = res.data.grading_systems;
+      let grading_systems = res.data.grading_systems.data;
+      let unit_actions = res.data.unit_actions;
       let score_items_0 = score_items.filter(item => item.grading_system_id == grading_systems[0].id);
       grading_systems[0].score_items = score_items_0;
       grading_systems[0].total = score_items_0
@@ -526,6 +545,8 @@ const ScoreItemsForm = (props) => {
       setQuizCols(cols);
       let mapScoresToStudents = students.map((student, studentIndex) => {
         student.scores = student_scores.filter(score => score.student_id == student.id);
+        let unit_action = unit_actions.filter(action => action.student_id == student.id);
+        student.action_taken = unit_action[0]?.action;
         student.mappedScores = [];
         score_items.forEach(scoreItem => {
           let item_score = student_scores.filter(score => score.score_item_id == scoreItem.id && score.student_id == student.id);

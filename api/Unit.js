@@ -18,5 +18,9 @@ export default {
   },
   get(id){
     return axios.get(`/api/units/${id}`);
+  },
+
+  saveAction(formData){
+    return axios.post(`/api/units/${formData.unit_id}/actions`, formData);
   }
 }

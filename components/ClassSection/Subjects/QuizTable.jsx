@@ -274,18 +274,18 @@ const QuizTable = (props) => {
           <tr>
             { props.columns.map((quizItem, index) => {
               return quizItem.show ? (
-                <th style={{textAlign: "center"}} key={quizItem.key} >{quizItem.title}</th>
+                <th style={{textAlign: "center"}} key={`quiz-title-${quizItem.key}`} >{quizItem.title}</th>
               ) : (
-                <></>
+                <th key={`quiz-title-${quizItem.key}`}></th>
               );
             }) }
           </tr>
           <tr>
             { props.columns.map((quizItem, index) => {
               return quizItem.show ? (
-                <th style={{textAlign: "center"}} key={quizItem.key} >{quizItem.value}</th>
+                <th style={{textAlign: "center"}} key={`quiz-value-${quizItem.key}`} >{quizItem.value}</th>
               ) : (
-                <></>
+                <th key={`quiz-value-${quizItem.key}`}></th>
               );
             }) }
           </tr>

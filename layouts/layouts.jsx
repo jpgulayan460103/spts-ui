@@ -62,46 +62,36 @@ const Layouts = (props) => {
         <Header className="header">
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="horizontal">
-            { props.role?.name == "admin" ? (
               <Menu.Item key="/">
                 <DashboardOutlined />
                 <Link href="/">
                   <a className='ml-2'>Dashboard</a>
                 </Link>
               </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
               <Menu.Item key="/students">
                 <TeamOutlined />
                 <Link href="/students">
                   <a className='ml-2'>Students</a>
                 </Link>
               </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
               <Menu.Item key="/teachers">
                 <SolutionOutlined />
                 <Link href="/teachers">
                   <a className='ml-2'>Teacher</a>
                 </Link>
               </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" || props.role.name == "teacher" ? (
               <Menu.Item key="/sections">
                 <ApartmentOutlined />
                 <Link href="/sections">
                   <a className='ml-2'>Sections</a>
                 </Link>
               </Menu.Item>
-            ) : "" }
-            { props.role.name == "admin" ? (
               <Menu.Item key="/subjects">
                 <ReadOutlined />
                 <Link href="/subjects">
                   <a className='ml-2'>Subjects</a>
                 </Link>
               </Menu.Item>
-            ) : "" }
 
           </Menu>
         </Header>
