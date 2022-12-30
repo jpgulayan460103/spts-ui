@@ -7,6 +7,7 @@ import ls from 'local-storage'
 import ClassSectionParent from '../components/ClassSection/ClassSection'
 import Portfolio from './../components/Student/Portfolio'
 import Router from 'next/router'
+import Dashboard from '../components/Dashboard/Dashboard';
 
 const index = (props) => {
   const [userRole, setUserRole] = useState("");
@@ -25,8 +26,8 @@ const index = (props) => {
         <title>Dashboard</title>
       </Head>
       <Layouts>
-        { userRole == "teacher" ? <ClassSectionParent /> : "" }
-        { userRole == "student" ? <Portfolio /> : "" }
+        { userRole == "teacher" ? <ClassSectionParent /> : <Dashboard /> }
+        { userRole == "student" ? <Portfolio /> : <Dashboard /> }
       </Layouts>
     </Provider>
   );
